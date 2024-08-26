@@ -5,18 +5,25 @@ export function buildTreeLayers(
   adj: Map<string, string[]>,
   rev: Map<string, string[]>,
 ): [LayerMap, BackedgeMap] {
+  // Initialize the layerMap and backedgeMap
   let layerMap: LayerMap = new Map<string, Layer>();
   let backedgeMap: BackedgeMap = new Map<string, boolean>();
 
+  // Create a map to store the children of each node
   let coc = new Map<string, string[]>();
 
+  // Create a set to keep track of visited nodes
   let seen = new Set<string>();
+
+  // Variable to store the maximum depth of the tree
   let maxDepth = 0;
 
+  // Initialize the coc map with empty arrays for each node
   for (const u of nodes) {
     coc.set(u, []);
   }
 
+  // Populate the coc map with children for each node from the adj map
   for (const [u, vs] of adj.entries()) {
     for (const v of vs) {
       if (!coc.get(u)!.includes(v)) {
@@ -25,6 +32,7 @@ export function buildTreeLayers(
     }
   }
 
+  // Populate the coc map with children for each node from the rev map
   for (const [u, vs] of rev.entries()) {
     for (const v of vs) {
       if (!coc.get(u)!.includes(v)) {
@@ -33,6 +41,7 @@ export function buildTreeLayers(
     }
   }
 
+  // Recursive function to find the maximum depth of the tree
   const findMaxDepth = (u: string, depth: number): void => {
     seen.add(u);
     maxDepth = Math.max(maxDepth, depth);
@@ -43,6 +52,7 @@ export function buildTreeLayers(
     }
   };
 
+  // Recursive function to build the layers of the tree
   const buildLayers = (u: string, depth: number): void => {
     seen.add(u);
     layerMap.set(u, [depth, maxDepth]);
@@ -60,6 +70,7 @@ export function buildTreeLayers(
     }
   };
 
+  // Iterate through each node and build the layers if not already built
   for (const u of nodes) {
     if (!layerMap.has(u)) {
       maxDepth = 0;

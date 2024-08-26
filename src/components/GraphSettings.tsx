@@ -10,6 +10,7 @@ interface Props {
 export function GraphSettings({ directed, settings, updateSettings }: Props) {
   return (
     <>
+      {/* Settings container */}
       <div
         className="font-jetbrains flex flex-col border-2 rounded-lg bg-block
           shadow-shadow shadow border-border sm:ml-1/16 sm:mb-1/8 sm:mr-1/16
@@ -17,10 +18,12 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           hover:border-border-hover lg:right-1/24 xl:right-5/200 xl:w-1/5 p-3
           space-y-3"
       >
+        {/* Settings title */}
         <h3 className="font-bold text-lg">Settings</h3>
 
         <br />
 
+        {/* Label Offset */}
         <h4 className="font-semibold">Label Offset</h4>
         <input
           type="range"
@@ -55,6 +58,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
 
         <br />
 
+        {/* Theme toggle */}
         <SettingsToggleSection
           title={"Theme"}
           leftLabel={"Light"}
@@ -70,6 +74,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
 
         <br />
 
+        {/* Node Radius */}
         <h4 className="font-semibold">Node Radius</h4>
         <input
           type="range"
@@ -97,6 +102,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           }}
         />
 
+        {/* Line Thickness */}
         <h4 className="font-semibold">Line Thickness</h4>
         <input
           type="range"
@@ -129,6 +135,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
 
         <br />
 
+        {/* Components toggle */}
         <SettingsToggleSection
           title={"Components"}
           leftLabel={"Hide"}
@@ -139,6 +146,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           updateSettings={updateSettings}
         />
 
+        {/* Bridges and Cut Vertices toggle */}
         {!directed ? (
           <SettingsToggleSection
             title={"Bridges and Cut Vertices"}
@@ -153,6 +161,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           <></>
         )}
 
+        {/* Tree Mode toggle */}
         {!directed ? (
           <SettingsToggleSection
             title={"Tree Mode"}
@@ -167,6 +176,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           <></>
         )}
 
+        {/* Lock Mode toggle */}
         <SettingsToggleSection
           title={"Lock Mode"}
           leftLabel={"Off"}

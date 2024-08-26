@@ -11,26 +11,32 @@ import { animateGraph } from "./animateGraph";
 import { resizeGraph } from "./animateGraph";
 import { updateGraph } from "./animateGraph";
 
+// Interface for the props passed to the component
 interface Props {
   graph: Graph;
   directed: boolean;
   settings: Settings;
 }
 
+// The main component
 export function GraphCanvas({ graph, directed, settings }: Props) {
+  // Reference to the canvas element
   let ref = useRef<HTMLCanvasElement>(null);
 
+  // State to hold the image data
   const [image, setImage] = useState<string>();
 
+  // Effect hook to initialize the canvas and handle resizing
   useEffect(() => {
+    // Load custom font
     let font = new FontFace(
       "JB",
       "url(/another_graph_editor/JetBrainsMono-Bold.ttf)",
     );
-
     font.load();
     document.fonts.add(font);
 
+    // Get the canvas element
     let canvas = ref.current;
 
     if (canvas === null) {
@@ -38,6 +44,7 @@ export function GraphCanvas({ graph, directed, settings }: Props) {
       return;
     }
 
+    // Get the 2D rendering context
     let ctx = canvas.getContext("2d");
 
     if (ctx === null) {
@@ -45,6 +52,7 @@ export function GraphCanvas({ graph, directed, settings }: Props) {
       return;
     }
 
+    // Function to resize the canvas and graph
     const resizeCanvas = (): void => {
       const canvasBorderX = canvas.offsetWidth - canvas.clientWidth;
       const canvasBorderY = canvas.offsetHeight - canvas.clientHeight;
@@ -63,27 +71,35 @@ export function GraphCanvas({ graph, directed, settings }: Props) {
       resizeGraph(rect.width - canvasBorderX, rect.height - canvasBorderY);
     };
 
+    // Initial canvas resize and graph animation
     resizeCanvas();
     animateGraph(canvas, ctx, setImage);
 
+    // Event listener for window resize
     window.addEventListener("resize", resizeCanvas);
+
+    // Cleanup function to remove event listener
     return () => {
       window.removeEventListener("resize", resizeCanvas);
     };
   }, []);
 
+  // Effect hook to update the graph when the `graph` prop changes
   useEffect(() => {
     updateGraph(graph);
   }, [graph]);
 
+  // Effect hook to update the directed flag when the `directed` prop changes
   useEffect(() => {
     updateDirected(directed);
   }, [directed]);
 
+  // Effect hook to update the settings when the `settings` prop changes
   useEffect(() => {
     updateSettings(settings);
   }, [settings]);
 
+  // Render the canvas and download button
   return (
     <div className="flex h-screen">
       <div

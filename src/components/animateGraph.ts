@@ -374,6 +374,15 @@ function updateEdges(graph: Graph): void {
   edges = graph.edges;
 }
 
+/**
+ * Updates the velocities of the nodes in the graph based on their positions and forces acting on them.
+ * remarks
+ * This function calculates the forces between each pair of nodes and updates their velocities accordingly.
+ * The forces are calculated based on the distance between the nodes and whether they are connected by an edge.
+ * The velocities are then updated by applying the calculated forces and considering friction.
+ * If the graph is in tree mode, additional forces are applied to arrange the nodes in a tree-like structure.
+ */
+
 function updateVelocities() {
   for (const u of nodes) {
     const uPos = nodeMap.get(u)!.pos;

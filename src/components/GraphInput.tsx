@@ -22,6 +22,7 @@ export function GraphInput({
   const [inputStatus, setInputStatus] = useState<boolean>(true);
   const [inputFormat, setInputFormat] = useState<InputFormat>("edges");
 
+  // Process the graph input based on the selected format
   const processGraphInput = () => {
     let parsedGraph: ParsedGraph;
 
@@ -72,6 +73,7 @@ export function GraphInput({
     }
   };
 
+  // Process the node labels
   const processNodeLabels = () => {
     const currentNodes = (
       document.getElementById("graphInputCurrentNodes") as HTMLTextAreaElement
@@ -100,6 +102,7 @@ export function GraphInput({
     updateGraph({ ...graph, nodeLabels: mp });
   };
 
+  // Handle keydown event for text areas
   const handleTextAreaKeyDown = (
     e: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
@@ -108,6 +111,7 @@ export function GraphInput({
     }
   };
 
+  // Run the processGraphInput function on component mount and resize
   useEffect(() => {
     processGraphInput();
     window.addEventListener("resize", processGraphInput);
@@ -116,12 +120,14 @@ export function GraphInput({
     };
   }, []);
 
+  // Run the processGraphInput function when the input format changes
   useEffect(() => {
     processGraphInput();
   }, [inputFormat]);
 
   return (
     <>
+      {/* Graph Data */}
       <div
         className="font-jetbrains flex flex-col border-2 rounded-lg bg-block
           shadow-shadow shadow border-border sm:ml-1/16 sm:mt-1/8 sm:mr-1/16
@@ -133,6 +139,7 @@ export function GraphInput({
 
         <br />
 
+        {/* Current Nodes */}
         <h4 className="text-base font-semibold">Current Nodes</h4>
         <textarea
           wrap="off"
@@ -147,6 +154,7 @@ export function GraphInput({
             text-current-nodes border-border w-auto"
         ></textarea>
 
+        {/* Node Labels */}
         <h4 className="text-base font-semibold">Node Labels</h4>
         <textarea
           wrap="off"
@@ -164,6 +172,7 @@ export function GraphInput({
 
         <br />
 
+        {/* Input Format */}
         <div className="flex font-light text-sm justify-between">
           <span>
             <span>
@@ -232,6 +241,7 @@ export function GraphInput({
           </label>
         </div>
 
+        {/* Directed/Undirected */}
         <div className="flex font-light text-sm justify-between">
           <span>
             <span>
@@ -298,6 +308,7 @@ export function GraphInput({
 
         <br />
 
+        {/* Roots */}
         <h4
           className={
             !directed && inputFormat === "edges"
@@ -348,6 +359,7 @@ export function GraphInput({
           }
         ></textarea>
 
+        {/* Edges */}
         <h4
           className={
             inputFormat === "edges" ? "text-base font-semibold" : "hidden"
@@ -371,6 +383,7 @@ export function GraphInput({
           }
         ></textarea>
 
+        {/* Parent Array */}
         <h4
           className={
             inputFormat === "parentChild" ? "text-base font-semibold" : "hidden"
@@ -394,6 +407,7 @@ export function GraphInput({
           }
         ></textarea>
 
+        {/* Child Array */}
         <h4
           className={
             inputFormat === "parentChild" ? "text-base font-semibold" : "hidden"
@@ -418,6 +432,7 @@ export function GraphInput({
           }
         ></textarea>
 
+        {/* Edge Labels */}
         <h4
           className={
             inputFormat === "parentChild" ? "text-base font-semibold" : "hidden"
@@ -442,6 +457,7 @@ export function GraphInput({
         ></textarea>
 
         <div className="flex justify-between">
+          {/* Clear Button */}
           <button
             className="bg-clear-normal hover:bg-clear-hover
               active:bg-clear-active inline rounded-md px-2 py-1"
@@ -464,6 +480,7 @@ export function GraphInput({
           >
             Clear
           </button>
+          {/* Input Status */}
           {inputStatus ? (
             <span
               className="font-jetbrains bg-format-ok rounded-md text-right px-2

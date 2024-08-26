@@ -6,7 +6,9 @@ import { Settings } from "./types";
 import { Graph } from "./types";
 
 import { useState } from "react";
+
 function App() {
+  // State variables
   const [graph, setGraph] = useState<Graph>({
     nodes: new Array<string>(),
     adj: new Map<string, string[]>(),
@@ -36,6 +38,7 @@ function App() {
     lockMode: false,
   });
 
+  // Update functions
   const updateGraph = (graph: Graph) => setGraph(graph);
   const updateDirected = (directed: boolean) => setDirected(directed);
   const updateSettings = (settings: Settings) => setSettings(settings);
@@ -49,6 +52,7 @@ function App() {
             : "light bg-ovr text-text absolute w-full min-h-200 overflow-scroll"
         }
       >
+        {/* Github link */}
         <a
           className="flex sm:top-2 lg:top-2 sm:right-2 lg:right-2 absolute
             border-2 border-border rounded-lg px-2 py-1 justify-between
@@ -70,13 +74,19 @@ function App() {
           )}
           <div className="ml-2">Github</div>
         </a>
+        
+        {/* Graph Input component */}
         <GraphInput
           graph={graph}
           updateGraph={updateGraph}
           directed={directed}
           updateDirected={updateDirected}
         />
+        
+        {/* Graph Canvas component */}
         <GraphCanvas graph={graph} directed={directed} settings={settings} />
+        
+        {/* Graph Settings component */}
         <GraphSettings
           directed={directed}
           settings={settings}
@@ -88,4 +98,3 @@ function App() {
 }
 
 export default App;
-
