@@ -1,14 +1,5 @@
 import { ParsedGraph } from "../types";
 
-// function isConvertibleToNum(s: string): boolean {
-//   for (const c of s) {
-//     if (!(c >= "0" && c <= "9")) {
-//       return false;
-//     }
-//   }
-//   return true;
-// }
-
 interface LeetcodeParsed {
   status: "ok" | "bad";
   edges: Array<string[]>;
