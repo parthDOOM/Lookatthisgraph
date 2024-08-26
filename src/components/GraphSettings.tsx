@@ -4,26 +4,23 @@ import { SettingsToggleSection } from "./SettingsToggleSection";
 interface Props {
   directed: boolean;
   settings: Settings;
-  updateSettings: (settings: Settings) => void;
+  setSettings: React.Dispatch<React.SetStateAction<Settings>>;
 }
 
-export function GraphSettings({ directed, settings, updateSettings }: Props) {
+export function GraphSettings({ directed, settings, setSettings }: Props) {
   return (
     <>
-      {/* Settings container */}
       <div
         className="font-jetbrains flex flex-col border-2 rounded-lg bg-block
           shadow-shadow shadow border-border sm:ml-1/16 sm:mb-1/8 sm:mr-1/16
           lg:m-0 lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:w-1/4
           hover:border-border-hover lg:right-1/24 xl:right-5/200 xl:w-1/5 p-3
-          space-y-3"
+          space-y-2.5"
       >
-        {/* Settings title */}
         <h3 className="font-bold text-lg">Settings</h3>
 
         <br />
 
-        {/* Label Offset */}
         <h4 className="font-semibold">Label Offset</h4>
         <input
           type="range"
@@ -42,7 +39,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
             [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:border-none
             [&::-moz-range-thumb]:rounded-full"
           onChange={(e) => {
-            updateSettings({
+            setSettings({
               ...settings,
               labelOffset: Number.parseInt(e.target.value),
             });
@@ -58,7 +55,6 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
 
         <br />
 
-        {/* Theme toggle */}
         <SettingsToggleSection
           title={"Theme"}
           leftLabel={"Light"}
@@ -67,14 +63,13 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           settingsName={"darkMode"}
           settings={settings}
           updateSettings={(newSettings) => {
-            updateSettings(newSettings);
+            setSettings(newSettings);
             localStorage.setItem("darkMode", newSettings.darkMode.toString());
           }}
         />
 
         <br />
 
-        {/* Node Radius */}
         <h4 className="font-semibold">Node Radius</h4>
         <input
           type="range"
@@ -94,7 +89,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
             [&::-moz-range-thumb]:rounded-full"
           onChange={(e) => {
             const newRadius = 16 + Number.parseInt(e.target.value);
-            updateSettings({
+            setSettings({
               ...settings,
               nodeRadius: newRadius,
             });
@@ -102,7 +97,6 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           }}
         />
 
-        {/* Line Thickness */}
         <h4 className="font-semibold">Line Thickness</h4>
         <input
           type="range"
@@ -122,7 +116,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
             [&::-moz-range-thumb]:rounded-full"
           onChange={(e) => {
             const newBorderWidthHalf = 1 + Number.parseFloat(e.target.value);
-            updateSettings({
+            setSettings({
               ...settings,
               nodeBorderWidthHalf: newBorderWidthHalf,
             });
@@ -133,9 +127,35 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           }}
         />
 
+        <h4 className="font-semibold">Edge Length</h4>
+        <input
+          type="range"
+          min={0}
+          max={75}
+          step={5}
+          value={settings.edgeLength - 10}
+          className="range appearance-none outline-none bg-slider h-1 w-5/6
+            self-center rounded-full cursor-ew-resize
+            [&::-webkit-slider-thumb]:appearance-none
+            [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
+            [&::-webkit-slider-thumb]:border-none
+            [&::-webkit-slider-thumb]:bg-slider-thumb
+            [&::-webkit-slider-thumb]:rounded-full
+            [&::-moz-range-thumb]:bg-slider-thumb [&::-moz-range-thumb]:w-4
+            [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:border-none
+            [&::-moz-range-thumb]:rounded-full"
+          onChange={(e) => {
+            const newEdgeLength = 10 + Number.parseInt(e.target.value);
+            setSettings({
+              ...settings,
+              edgeLength: newEdgeLength,
+            });
+            localStorage.setItem("edgeLength", newEdgeLength.toString());
+          }}
+        />
+
         <br />
 
-        {/* Components toggle */}
         <SettingsToggleSection
           title={"Components"}
           leftLabel={"Hide"}
@@ -143,10 +163,9 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           toggleID={"settingsComponents"}
           settingsName={"showComponents"}
           settings={settings}
-          updateSettings={updateSettings}
+          updateSettings={setSettings}
         />
 
-        {/* Bridges and Cut Vertices toggle */}
         {!directed ? (
           <SettingsToggleSection
             title={"Bridges and Cut Vertices"}
@@ -155,13 +174,12 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
             toggleID={"settingsBridges"}
             settingsName={"showBridges"}
             settings={settings}
-            updateSettings={updateSettings}
+            updateSettings={setSettings}
           />
         ) : (
           <></>
         )}
 
-        {/* Tree Mode toggle */}
         {!directed ? (
           <SettingsToggleSection
             title={"Tree Mode"}
@@ -170,13 +188,12 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
             toggleID={"settingsTreeMode"}
             settingsName={"treeMode"}
             settings={settings}
-            updateSettings={updateSettings}
+            updateSettings={setSettings}
           />
         ) : (
           <></>
         )}
 
-        {/* Lock Mode toggle */}
         <SettingsToggleSection
           title={"Lock Mode"}
           leftLabel={"Off"}
@@ -184,7 +201,7 @@ export function GraphSettings({ directed, settings, updateSettings }: Props) {
           toggleID={"settingsLockMode"}
           settingsName={"lockMode"}
           settings={settings}
-          updateSettings={updateSettings}
+          updateSettings={setSettings}
         />
       </div>
     </>

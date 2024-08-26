@@ -13,8 +13,6 @@ interface LeetcodeParsed {
   status: "ok" | "bad";
   edges: Array<string[]>;
 }
-
-// Function to parse Leetcode-style input
 function parseLeetcodeStyle(s: string): LeetcodeParsed {
   if (s.length >= 4 && s[0] === "[" && s[1] === "[") {
     if (s[s.length - 1] === "]" && s[s.length - 2] === "]") {
@@ -33,7 +31,6 @@ function parseLeetcodeStyle(s: string): LeetcodeParsed {
   };
 }
 
-// Function to parse parent-child graph input
 export function parseGraphInputParentChild(
   roots: string,
   parent: string,
@@ -41,7 +38,6 @@ export function parseGraphInputParentChild(
   labels: string,
   nodeLabels: string,
 ): ParsedGraph {
-  // Parsing parent, child, labels, and nodeLabels
   const p = parent
     .trim()
     .split(/\s+/)
@@ -70,7 +66,6 @@ export function parseGraphInputParentChild(
   let edges = new Array<string>();
   let edgeLabels = new Map<string, string>();
 
-  // Parsing roots
   roots
     .trim()
     .split(/\s+/)
@@ -81,7 +76,6 @@ export function parseGraphInputParentChild(
       }
     });
 
-  // Building adjacency list, reverse adjacency list, edges, and edge labels
   for (let i = 0; i < edgeCnt; i++) {
     if (p[i] === c[i] && !nodes.includes(p[i])) {
       nodes.push(p[i]);
@@ -109,7 +103,6 @@ export function parseGraphInputParentChild(
     }
   }
 
-  // Building reverse adjacency list
   for (const [u, vs] of adj.entries()) {
     if (!rev.has(u)) {
       rev.set(u, []);
@@ -129,7 +122,6 @@ export function parseGraphInputParentChild(
 
   let mp = new Map<string, string>();
 
-  // Building node labels map
   for (let i = 0; i < len; i++) {
     if (nl[i] !== "_") {
       mp.set(sortedNodes[i], nl[i]);
@@ -149,7 +141,6 @@ export function parseGraphInputParentChild(
   };
 }
 
-// Function to parse edge-based graph input
 export function parseGraphInputEdges(
   roots: string,
   input: string,
@@ -184,7 +175,6 @@ export function parseGraphInputEdges(
   let edges = new Array<string>();
   let edgeLabels = new Map<string, string>();
 
-  // Parsing roots
   roots
     .trim()
     .split(/\s+/)
@@ -195,7 +185,6 @@ export function parseGraphInputEdges(
       }
     });
 
-  // Building adjacency list, reverse adjacency list, edges, and edge labels
   for (const e of raw) {
     if (e.length == 1) {
       if (!nodes.includes(e[0])) {
@@ -234,7 +223,6 @@ export function parseGraphInputEdges(
     }
   }
 
-  // Building reverse adjacency list
   for (const [u, vs] of adj.entries()) {
     if (!rev.has(u)) {
       rev.set(u, []);
@@ -259,7 +247,6 @@ export function parseGraphInputEdges(
 
   let mp = new Map<string, string>();
 
-  // Building node labels map
   for (let i = 0; i < len; i++) {
     if (nl[i] !== "_") {
       mp.set(sortedNodes[i], nl[i]);

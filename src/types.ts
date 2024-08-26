@@ -1,35 +1,38 @@
 export interface Graph {
-  nodes: string[]; // Array of node names
-  adj: Map<string, string[]>; // Adjacency map representing the connections between nodes
-  rev: Map<string, string[]>; // Reverse adjacency map representing the reverse connections between nodes
-  edges: string[]; // Array of edge names
-  edgeLabels: Map<string, string>; // Map of edge names to their labels
-  nodeLabels: Map<string, string>; // Map of node names to their labels
+  nodes: string[];
+  adj: Map<string, string[]>;
+  rev: Map<string, string[]>;
+  edges: string[];
+  edgeLabels: Map<string, string>;
+  nodeLabels: Map<string, string>;
 }
 
 export interface Settings {
-  labelOffset: number; // Offset for label positioning
-  darkMode: boolean; // Flag indicating whether dark mode is enabled
-  nodeRadius: number; // Radius of nodes
-  nodeBorderWidthHalf: number; // Half of the border width of nodes
-  showComponents: boolean; // Flag indicating whether to show components
-  showBridges: boolean; // Flag indicating whether to show bridges
-  treeMode: boolean; // Flag indicating whether tree mode is enabled
-  lockMode: boolean; // Flag indicating whether lock mode is enabled
+  labelOffset: number;
+  darkMode: boolean;
+  nodeRadius: number;
+  nodeBorderWidthHalf: number;
+  edgeLength: number;
+  showComponents: boolean;
+  showBridges: boolean;
+  treeMode: boolean;
+  lockMode: boolean;
 }
 
 export interface ParsedGraph {
-  status: "OK" | "BAD"; // Status of the parsed graph
-  graph?: Graph; // Optional graph object
+  status: "OK" | "BAD";
+  graph?: Graph;
 }
 
-export type ColorMap = Map<string, number>; // Map of node names to color values
+export type InputFormat = "edges" | "parentChild";
 
-export type CutMap = Map<string, boolean>; // Map of node names to cut values
+export type ColorMap = Map<string, number>;
 
-export type Layer = [number, number]; // Tuple representing a layer
+export type CutMap = Map<string, boolean>;
 
-export type LayerMap = Map<string, Layer>; // Map of node names to layers
+export type Layer = [number, number];
 
-export type BackedgeMap = Map<string, boolean>; // Map of node names to backedge values
-export type BridgeMap = Map<string, boolean>; // Map of node names to bridge values
+export type LayerMap = Map<string, Layer>;
+
+export type BackedgeMap = Map<string, boolean>;
+export type BridgeMap = Map<string, boolean>;

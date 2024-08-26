@@ -38,6 +38,32 @@ class Node {
   }
 }
 
+function generateRandomCoords(): Vector2D {
+  let x = (Math.random() * canvasWidth) / 2 + canvasWidth / 4;
+  let y = (Math.random() * canvasHeight) / 2 + canvasHeight / 4;
+
+  let xFailCnt = 0;
+  let yFailCnt = 0;
+
+  while (x <= nodeRadius || x >= canvasWidth - nodeRadius) {
+    x = (Math.random() * canvasWidth) / 2 + canvasWidth / 4;
+    xFailCnt++;
+    if (xFailCnt === 10) {
+      break;
+    }
+  }
+
+  while (y <= nodeRadius || y >= canvasHeight - nodeRadius) {
+    y = (Math.random() * canvasHeight) / 2 + canvasHeight / 4;
+    yFailCnt++;
+    if (yFailCnt === 10) {
+      break;
+    }
+  }
+
+  return { x, y };
+}
+
 function isInteger(val: string) {
   return parseInt(val, 10).toString() === val;
 }
@@ -232,7 +258,6 @@ const NODE_LABEL_OUTLINE_DARK = "hsl(10, 10%, 30%)";
 
 const TEXT_Y_OFFSET = 1;
 
-const NODE_DIST = 100;
 const NODE_FRICTION = 0.05;
 
 const CANVAS_FIELD_DIST = 50;
@@ -294,14 +319,19 @@ let settings: Settings = {
   darkMode: true,
   nodeRadius: 15,
   nodeBorderWidthHalf: 15,
+  edgeLength: 10,
   showComponents: false,
   showBridges: false,
   treeMode: false,
   lockMode: false,
 };
 
+let lastDeletedNodePos: Vector2D = { x: -1, y: -1 };
+
 let nodes: string[] = [];
 let nodeMap = new Map<string, Node>();
+
+let nodeDist: number = 40;
 
 let nodeLabels = new Map<string, string>();
 
@@ -325,34 +355,6 @@ let cutMap: CutMap | undefined = undefined;
 let bridgeMap: BridgeMap | undefined = undefined;
 
 function updateNodes(graph: Graph): void {
-  for (const u of graph.nodes) {
-    if (!nodes.includes(u)) {
-      let x = Math.random() * canvasWidth;
-      let y = Math.random() * canvasHeight;
-
-      let xFailCnt = 0;
-      let yFailCnt = 0;
-
-      while (x <= nodeRadius || x >= canvasWidth - nodeRadius) {
-        x = Math.round(Math.random() * canvasWidth);
-        xFailCnt++;
-        if (xFailCnt === 10) {
-          break;
-        }
-      }
-      while (y <= nodeRadius || y >= canvasHeight - nodeRadius) {
-        y = Math.round(Math.random() * canvasHeight);
-        yFailCnt++;
-        if (yFailCnt === 10) {
-          break;
-        }
-      }
-
-      nodes.push(u);
-      nodeMap.set(u, new Node(x, y));
-    }
-  }
-
   let deletedNodes: string[] = [];
 
   for (const u of nodes) {
@@ -364,7 +366,25 @@ function updateNodes(graph: Graph): void {
   nodes = nodes.filter((u) => !deletedNodes.includes(u));
 
   for (const u of deletedNodes) {
+    lastDeletedNodePos = nodeMap.get(u)!.pos;
     nodeMap.delete(u);
+  }
+
+  for (let i = 0; i < graph.nodes.length; i++) {
+    const u = graph.nodes[i];
+
+    if (!nodes.includes(u)) {
+      let coords = generateRandomCoords();
+
+      if (lastDeletedNodePos.x !== -1) {
+        coords = lastDeletedNodePos;
+        lastDeletedNodePos = { x: -1, y: -1 };
+      }
+
+      nodes.push(u);
+
+      nodeMap.set(u, new Node(coords.x, coords.y));
+    }
   }
 
   nodes = graph.nodes;
@@ -373,15 +393,6 @@ function updateNodes(graph: Graph): void {
 function updateEdges(graph: Graph): void {
   edges = graph.edges;
 }
-
-/**
- * Updates the velocities of the nodes in the graph based on their positions and forces acting on them.
- * remarks
- * This function calculates the forces between each pair of nodes and updates their velocities accordingly.
- * The forces are calculated based on the distance between the nodes and whether they are connected by an edge.
- * The velocities are then updated by applying the calculated forces and considering friction.
- * If the graph is in tree mode, additional forces are applied to arrange the nodes in a tree-like structure.
- */
 
 function updateVelocities() {
   for (const u of nodes) {
@@ -399,8 +410,8 @@ function updateVelocities() {
           edges.includes([u, v].join(" ")) || edges.includes([v, u].join(" "));
 
         if (isEdge) {
-          aMag = Math.pow(Math.abs(dist - NODE_DIST), 1.5) / 100_000;
-          if (dist >= NODE_DIST) {
+          aMag = Math.pow(Math.abs(dist - nodeDist), 1.6) / 100_000;
+          if (dist >= nodeDist) {
             aMag *= -1;
           }
         }
@@ -442,7 +453,7 @@ function updateVelocities() {
       const depth = layerMap.get(u)![0];
       const maxDepth = layerMap.get(u)![1];
 
-      let layerHeight = (NODE_DIST * 4) / 5;
+      let layerHeight = (nodeDist * 4) / 5;
 
       if (maxDepth * layerHeight >= canvasHeight - 2 * CANVAS_FIELD_DIST) {
         layerHeight = (canvasHeight - 2 * CANVAS_FIELD_DIST) / maxDepth;
@@ -451,7 +462,7 @@ function updateVelocities() {
       const yTarget = CANVAS_FIELD_DIST + (depth - 0.5) * layerHeight;
       const y = nodeMap.get(u)!.pos.y;
 
-      let ay = Math.pow(Math.abs(y - yTarget), 1.65) / 100;
+      let ay = Math.pow(Math.abs(y - yTarget), 1.75) / 100;
 
       if (y > yTarget) {
         ay *= -1;
@@ -493,6 +504,7 @@ function buildSettings(): void {
 
   nodeRadius = settings.nodeRadius;
   nodeBorderWidthHalf = settings.nodeBorderWidthHalf;
+  nodeDist = settings.edgeLength + 2 * nodeRadius;
 
   labelOffset = settings.labelOffset;
 
@@ -527,7 +539,7 @@ function buildSettings(): void {
   }
 }
 
-export function updateGraph(graph: Graph) {
+export function updateGraphEdges(graph: Graph) {
   updateNodes(graph);
   updateEdges(graph);
 
@@ -540,16 +552,16 @@ export function updateGraph(graph: Graph) {
   buildSettings();
 }
 
-export function resizeGraph(width: number, height: number) {
+export function resizeGraphEdges(width: number, height: number) {
   canvasWidth = width;
   canvasHeight = height;
 }
 
-export function updateDirected(d: boolean) {
+export function updateDirectedEdges(d: boolean) {
   directed = d;
 }
 
-export function updateSettings(s: Settings) {
+export function updateSettingsEdges(s: Settings) {
   settings = s;
   buildSettings();
 }
@@ -631,11 +643,13 @@ function renderEdges(ctx: CanvasRenderingContext2D) {
   }
 }
 
-export function animateGraph(
+export function animateGraphEdges(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   setImage: React.Dispatch<React.SetStateAction<string | undefined>>,
 ) {
+  generateRandomCoords();
+
   canvas.addEventListener("pointerdown", (event) => {
     event.preventDefault();
 
@@ -649,7 +663,9 @@ export function animateGraph(
         draggedNodes.push(u);
       }
     });
-    if (nodes.length) {
+
+    if (draggedNodes.length) {
+      draggedNodes = [draggedNodes[draggedNodes.length - 1]];
       canvas.style.cursor = "pointer";
     }
   });

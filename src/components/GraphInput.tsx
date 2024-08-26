@@ -1,28 +1,32 @@
 import { parseGraphInputEdges } from "./parseGraphInput";
 import { parseGraphInputParentChild } from "./parseGraphInput";
 import { useEffect, useState } from "react";
-import { ParsedGraph } from "../types";
+import { InputFormat, ParsedGraph } from "../types";
 import { Graph } from "../types";
 
 interface Props {
-  graph: Graph;
-  updateGraph: (graph: Graph) => void;
+  graphEdges: Graph;
+  setGraphEdges: React.Dispatch<React.SetStateAction<Graph>>;
+  graphParChild: Graph;
+  setGraphParChild: React.Dispatch<React.SetStateAction<Graph>>;
+  inputFormat: InputFormat;
+  setInputFormat: React.Dispatch<React.SetStateAction<InputFormat>>;
   directed: boolean;
-  updateDirected: (directed: boolean) => void;
+  setDirected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-type InputFormat = "edges" | "parentChild";
-
 export function GraphInput({
-  graph,
-  updateGraph,
+  graphEdges,
+  setGraphEdges,
+  graphParChild,
+  setGraphParChild,
+  inputFormat,
+  setInputFormat,
   directed,
-  updateDirected,
+  setDirected,
 }: Props) {
   const [inputStatus, setInputStatus] = useState<boolean>(true);
-  const [inputFormat, setInputFormat] = useState<InputFormat>("edges");
 
-  // Process the graph input based on the selected format
   const processGraphInput = () => {
     let parsedGraph: ParsedGraph;
 
@@ -51,6 +55,12 @@ export function GraphInput({
         (document.getElementById("graphInputNodeLabels") as HTMLTextAreaElement)
           .value,
       );
+      if (parsedGraph.status === "BAD") {
+        setInputStatus(false);
+      } else {
+        setInputStatus(true);
+        setGraphEdges(parsedGraph.graph!);
+      }
     } else {
       parsedGraph = parseGraphInputParentChild(
         roots,
@@ -63,17 +73,15 @@ export function GraphInput({
         (document.getElementById("graphInputNodeLabels") as HTMLTextAreaElement)
           .value,
       );
-    }
-
-    if (parsedGraph.status === "BAD") {
-      setInputStatus(false);
-    } else {
-      setInputStatus(true);
-      updateGraph(parsedGraph.graph!);
+      if (parsedGraph.status === "BAD") {
+        setInputStatus(false);
+      } else {
+        setInputStatus(true);
+        setGraphParChild(parsedGraph.graph!);
+      }
     }
   };
 
-  // Process the node labels
   const processNodeLabels = () => {
     const currentNodes = (
       document.getElementById("graphInputCurrentNodes") as HTMLTextAreaElement
@@ -99,10 +107,13 @@ export function GraphInput({
       }
     }
 
-    updateGraph({ ...graph, nodeLabels: mp });
+    if (inputFormat === "edges") {
+      setGraphEdges({ ...graphEdges, nodeLabels: mp });
+    } else {
+      setGraphParChild({ ...graphParChild, nodeLabels: mp });
+    }
   };
 
-  // Handle keydown event for text areas
   const handleTextAreaKeyDown = (
     e: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
@@ -111,35 +122,23 @@ export function GraphInput({
     }
   };
 
-  // Run the processGraphInput function on component mount and resize
-  useEffect(() => {
-    processGraphInput();
-    window.addEventListener("resize", processGraphInput);
-    return () => {
-      window.removeEventListener("resize", processGraphInput);
-    };
-  }, []);
-
-  // Run the processGraphInput function when the input format changes
   useEffect(() => {
     processGraphInput();
   }, [inputFormat]);
 
   return (
     <>
-      {/* Graph Data */}
       <div
         className="font-jetbrains flex flex-col border-2 rounded-lg bg-block
           shadow-shadow shadow border-border sm:ml-1/16 sm:mt-1/8 sm:mr-1/16
           lg:m-0 lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:w-1/4
           hover:border-border-hover lg:left-1/24 xl:left-5/200 xl:w-1/5 p-3
-          space-y-3"
+          space-y-3 z-10"
       >
         <h3 className="font-bold text-lg">Graph Data</h3>
 
         <br />
 
-        {/* Current Nodes */}
         <h4 className="text-base font-semibold">Current Nodes</h4>
         <textarea
           wrap="off"
@@ -147,14 +146,17 @@ export function GraphInput({
           name="graphInputCurrentNodes"
           id="graphInputCurrentNodes"
           onChange={processNodeLabels}
-          value={[...graph.nodes].sort().join(" ")}
+          value={
+            inputFormat === "edges"
+              ? [...graphEdges.nodes].sort().join(" ")
+              : [...graphParChild.nodes].sort().join(" ")
+          }
           readOnly
           className="bg-ovr font-semibold font-jetbrains resize-none border-2
             rounded-md px-2 py-1 border-single focus:outline-none text-lg
-            text-current-nodes border-border w-auto"
+            text-current-nodes border-border w-auto no-scrollbar"
         ></textarea>
 
-        {/* Node Labels */}
         <h4 className="text-base font-semibold">Node Labels</h4>
         <textarea
           wrap="off"
@@ -167,12 +169,11 @@ export function GraphInput({
           className="bg-ovr font-semibold font-jetbrains resize-none border-2
             rounded-md px-2 py-1 border-single focus:outline-none text-lg
             border-border focus:border-border-active placeholder-placeholder
-            placeholder:italic w-auto"
+            placeholder:italic w-auto no-scrollbar"
         ></textarea>
 
         <br />
 
-        {/* Input Format */}
         <div className="flex font-light text-sm justify-between">
           <span>
             <span>
@@ -241,7 +242,6 @@ export function GraphInput({
           </label>
         </div>
 
-        {/* Directed/Undirected */}
         <div className="flex font-light text-sm justify-between">
           <span>
             <span>
@@ -253,7 +253,7 @@ export function GraphInput({
                 <span
                   className="p-0 hover:cursor-pointer"
                   onClick={() => {
-                    updateDirected(false);
+                    setDirected(false);
                     let checkbox = document.getElementById(
                       "directedCheckbox",
                     ) as HTMLInputElement;
@@ -274,7 +274,7 @@ export function GraphInput({
                 <span
                   className="p-0 hover:cursor-pointer"
                   onClick={() => {
-                    updateDirected(true);
+                    setDirected(true);
                     let checkbox = document.getElementById(
                       "directedCheckbox",
                     ) as HTMLInputElement;
@@ -288,7 +288,7 @@ export function GraphInput({
           </span>
           <label className="relative inline w-9">
             <input
-              onClick={() => updateDirected(!directed)}
+              onClick={() => setDirected(!directed)}
               type="checkbox"
               id="directedCheckbox"
               className="peer invisible"
@@ -308,7 +308,6 @@ export function GraphInput({
 
         <br />
 
-        {/* Roots */}
         <h4
           className={
             !directed && inputFormat === "edges"
@@ -329,7 +328,7 @@ export function GraphInput({
             !directed && inputFormat === "edges"
               ? `bg-ovr font-semibold font-jetbrains resize-none border-2
                 rounded-md px-2 py-1 border-single focus:outline-none text-lg
-                border-border focus:border-border-active w-auto`
+                border-border focus:border-border-active w-auto no-scrollbar`
               : "hidden"
           }
         ></textarea>
@@ -354,12 +353,11 @@ export function GraphInput({
             !directed && inputFormat === "parentChild"
               ? `bg-ovr font-semibold font-jetbrains resize-none border-2
                 rounded-md px-2 py-1 border-single focus:outline-none text-lg
-                border-border focus:border-border-active w-auto`
+                border-border focus:border-border-active w-auto no-scrollbar`
               : "hidden"
           }
         ></textarea>
 
-        {/* Edges */}
         <h4
           className={
             inputFormat === "edges" ? "text-base font-semibold" : "hidden"
@@ -378,12 +376,11 @@ export function GraphInput({
             inputFormat === "edges"
               ? `font-semibold font-jetbrains resize-none border-2 rounded-md
                 px-2 py-1 border-single focus:outline-none text-lg border-border
-                focus:border-border-active bg-ovr w-auto`
+                focus:border-border-active bg-ovr w-auto no-scrollbar`
               : "hidden"
           }
         ></textarea>
 
-        {/* Parent Array */}
         <h4
           className={
             inputFormat === "parentChild" ? "text-base font-semibold" : "hidden"
@@ -402,12 +399,11 @@ export function GraphInput({
             inputFormat === "parentChild"
               ? `bg-ovr font-semibold font-jetbrains resize-none border-2
                 rounded-md px-2 py-1 border-single focus:outline-none text-lg
-                border-border focus:border-border-active w-auto`
+                border-border focus:border-border-active w-auto no-scrollbar`
               : "hidden"
           }
         ></textarea>
 
-        {/* Child Array */}
         <h4
           className={
             inputFormat === "parentChild" ? "text-base font-semibold" : "hidden"
@@ -427,12 +423,11 @@ export function GraphInput({
             inputFormat === "parentChild"
               ? `bg-ovr font-semibold font-jetbrains resize-none border-2
                 rounded-md px-2 py-1 border-single focus:outline-none text-lg
-                border-border focus:border-border-active w-auto`
+                border-border focus:border-border-active w-auto no-scrollbar`
               : "hidden"
           }
         ></textarea>
 
-        {/* Edge Labels */}
         <h4
           className={
             inputFormat === "parentChild" ? "text-base font-semibold" : "hidden"
@@ -451,13 +446,12 @@ export function GraphInput({
             inputFormat === "parentChild"
               ? `bg-ovr font-semibold font-jetbrains resize-none border-2
                 rounded-md px-2 py-1 border-single focus:outline-none text-lg
-                border-border focus:border-border-active w-auto`
+                border-border focus:border-border-active w-auto no-scrollbar`
               : "hidden"
           }
         ></textarea>
 
         <div className="flex justify-between">
-          {/* Clear Button */}
           <button
             className="bg-clear-normal hover:bg-clear-hover
               active:bg-clear-active inline rounded-md px-2 py-1"
@@ -480,7 +474,6 @@ export function GraphInput({
           >
             Clear
           </button>
-          {/* Input Status */}
           {inputStatus ? (
             <span
               className="font-jetbrains bg-format-ok rounded-md text-right px-2

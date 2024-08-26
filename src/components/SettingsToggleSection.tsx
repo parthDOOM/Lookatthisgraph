@@ -10,19 +10,6 @@ interface Props {
   updateSettings: (settings: Settings) => void;
 }
 
-/**
- * Renders a toggle section in the settings.
- *
- * @param {Props} props - The component props.
- * @param {string} props.title - The title of the toggle section.
- * @param {string} props.leftLabel - The label for the left option.
- * @param {string} props.rightLabel - The label for the right option.
- * @param {string} props.toggleID - The ID of the toggle element.
- * @param {string} props.settingsName - The name of the settings property.
- * @param {object} props.settings - The settings object.
- * @param {function} props.updateSettings - The function to update the settings.
- * @returns {JSX.Element} The rendered toggle section.
- */
 export function SettingsToggleSection({
   title,
   leftLabel,
