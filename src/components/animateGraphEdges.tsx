@@ -263,29 +263,29 @@ const NODE_FRICTION = 0.05;
 const CANVAS_FIELD_DIST = 50;
 
 const FILL_COLORS_LIGHT = [
-  "#dedede",
-  "#dd7878",
-  "#7287ed",
-  "#dfae5d",
-  "#70b05b",
-  "#dc8a68",
-  "#309fc5",
-  "#37c2b9",
-  "#ea76cb",
-  "#a879ef",
+  "#f7f4f1",
+  "#ff6b6b",
+  "#4d9de0",
+  "#ffa502",
+  "#2ed573",
+  "#ff6348",
+  "#1e90ff",
+  "#70a1ff",
+  "#ff4757",
+  "#ffa7c4",
 ];
 
 const FILL_COLORS_DARK = [
-  "#232323",
-  "#7d3838",
-  "#42479d",
-  "#7f5e0d",
-  "#40603b",
-  "#8c3a28",
-  "#104f85",
-  "#176249",
-  "#7a366b",
-  "#58398f",
+  "#1b1f23",
+  "#ff4757",
+  "#3742fa",
+  "#ffa502",
+  "#2ed573",
+  "#ff6348",
+  "#1e90ff",
+  "#3742fa",
+  "#ff6b81",
+  "#a4b0be",
 ];
 
 const FILL_COLORS_LENGTH = 10;

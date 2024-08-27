@@ -21,10 +21,12 @@ export function SettingsToggleSection({
 }: Props) {
   return (
     <>
+      {/* Section title */}
       <h4 className="font-semibold text-base">{title}</h4>
       <div className="flex font-light text-sm justify-between">
         <span>
           <span>
+            {/* Left label */}
             {!settings[settingsName] ? (
               <span className="text-selected p-0 hover:cursor-pointer">
                 {leftLabel}
@@ -33,6 +35,7 @@ export function SettingsToggleSection({
               <span
                 className="p-0 hover:cursor-pointer"
                 onClick={() => {
+                  // Update settings when left label is clicked
                   updateSettings({
                     ...settings,
                     [settingsName]: false,
@@ -49,6 +52,7 @@ export function SettingsToggleSection({
           </span>
           <span> | </span>
           <span>
+            {/* Right label */}
             {settings[settingsName] ? (
               <span className="text-selected p-0 hover:cursor-pointer">
                 {rightLabel}
@@ -57,6 +61,7 @@ export function SettingsToggleSection({
               <span
                 className="p-0 hover:cursor-pointer"
                 onClick={() => {
+                  // Update settings when right label is clicked
                   updateSettings({
                     ...settings,
                     [settingsName]: true,
@@ -75,6 +80,7 @@ export function SettingsToggleSection({
         <label className="relative inline w-9">
           <input
             onClick={() =>
+              // Update settings when checkbox is clicked
               updateSettings({
                 ...settings,
                 [settingsName]: !settings[settingsName],

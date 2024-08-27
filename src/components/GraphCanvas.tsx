@@ -38,6 +38,7 @@ export function GraphCanvas({
   const [image, setImage] = useState<string>();
 
   useEffect(() => {
+    // Load custom font
     let font = new FontFace(
       "JB",
       "url(/another_graph_editor/JetBrainsMono-Bold.ttf)",
@@ -61,6 +62,7 @@ export function GraphCanvas({
     }
 
     const resizeCanvas = (): void => {
+      // Resize canvas to fit container
       const canvasBorderX = canvas.offsetWidth - canvas.clientWidth;
       const canvasBorderY = canvas.offsetHeight - canvas.clientHeight;
 
@@ -103,6 +105,7 @@ export function GraphCanvas({
   }, []);
 
   useEffect(() => {
+    // Update graph when it changes
     if (inputFormat === "edges") {
       updateGraphEdges(graph);
     } else {
@@ -111,11 +114,13 @@ export function GraphCanvas({
   }, [graph]);
 
   useEffect(() => {
+    // Update directed edges when `directed` changes
     updateDirectedEdges(directed);
     updateDirectedParChild(directed);
   }, [directed]);
 
   useEffect(() => {
+    // Update settings when they change
     updateSettingsEdges(settings);
     updateSettingsParChild(settings);
   }, [settings]);
