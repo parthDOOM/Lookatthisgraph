@@ -27,11 +27,13 @@ export function GraphInput({
 }: Props) {
   const [inputStatus, setInputStatus] = useState<boolean>(true);
 
+  // Function to process the graph input
   const processGraphInput = () => {
     let parsedGraph: ParsedGraph;
 
     let roots = "";
 
+    // Get the roots based on the input format and directed flag
     if (!directed) {
       roots =
         inputFormat === "edges"
@@ -47,6 +49,7 @@ export function GraphInput({
             ).value;
     }
 
+    // Parse the graph input based on the input format
     if (inputFormat === "edges") {
       parsedGraph = parseGraphInputEdges(
         roots,
@@ -82,6 +85,7 @@ export function GraphInput({
     }
   };
 
+  // Function to process the node labels
   const processNodeLabels = () => {
     const currentNodes = (
       document.getElementById("graphInputCurrentNodes") as HTMLTextAreaElement
@@ -107,6 +111,7 @@ export function GraphInput({
       }
     }
 
+    // Update the graph edges or parent-child with the node labels
     if (inputFormat === "edges") {
       setGraphEdges({ ...graphEdges, nodeLabels: mp });
     } else {
@@ -114,6 +119,7 @@ export function GraphInput({
     }
   };
 
+  // Function to handle key down event on text area
   const handleTextAreaKeyDown = (
     e: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
@@ -122,6 +128,7 @@ export function GraphInput({
     }
   };
 
+  // Process the graph input when the input format changes
   useEffect(() => {
     processGraphInput();
   }, [inputFormat]);
@@ -140,6 +147,7 @@ export function GraphInput({
         <br />
 
         <h4 className="text-base font-semibold">Current Nodes</h4>
+        {/* Text area for current nodes */}
         <textarea
           wrap="off"
           rows={1}
@@ -158,6 +166,7 @@ export function GraphInput({
         ></textarea>
 
         <h4 className="text-base font-semibold">Node Labels</h4>
+        {/* Text area for node labels */}
         <textarea
           wrap="off"
           name="graphInputNodeLabels"
@@ -177,6 +186,7 @@ export function GraphInput({
         <div className="flex font-light text-sm justify-between">
           <span>
             <span>
+              {/* Toggle between edges and parent-child input format */}
               {inputFormat === "edges" ? (
                 <span className="text-selected p-0 hover:cursor-pointer">
                   Edges
@@ -218,6 +228,7 @@ export function GraphInput({
               )}
             </span>
           </span>
+          {/* Checkbox to toggle between edges and parent-child input format */}
           <label className="relative inline w-9">
             <input
               onClick={() =>
@@ -245,6 +256,7 @@ export function GraphInput({
         <div className="flex font-light text-sm justify-between">
           <span>
             <span>
+              {/* Toggle between directed and undirected graph */}
               {!directed ? (
                 <span className="text-selected p-0 hover:cursor-pointer">
                   Undirected
@@ -286,6 +298,7 @@ export function GraphInput({
               )}
             </span>
           </span>
+          {/* Checkbox to toggle between directed and undirected graph */}
           <label className="relative inline w-9">
             <input
               onClick={() => setDirected(!directed)}
@@ -317,6 +330,7 @@ export function GraphInput({
         >
           Roots
         </h4>
+        {/* Text area for roots in edges format */}
         <textarea
           wrap="off"
           name="graphInputRootsEdges"
@@ -342,6 +356,7 @@ export function GraphInput({
         >
           Roots
         </h4>
+        {/* Text area for roots in parent-child format */}
         <textarea
           wrap="off"
           name="graphInputRootsParChild"
@@ -365,6 +380,7 @@ export function GraphInput({
         >
           Edges
         </h4>
+        {/* Text area for edges */}
         <textarea
           wrap="off"
           name="graphInputEdges"
@@ -388,6 +404,7 @@ export function GraphInput({
         >
           Parent Array
         </h4>
+        {/* Text area for parent array */}
         <textarea
           wrap="off"
           name="graphInputParent"
@@ -411,6 +428,7 @@ export function GraphInput({
         >
           Child Array
         </h4>
+        {/* Text area for child array */}
         <textarea
           wrap="off"
           name="graphInputChild"
@@ -435,6 +453,7 @@ export function GraphInput({
         >
           Edge Labels
         </h4>
+        {/* Text area for edge labels */}
         <textarea
           wrap="off"
           name="graphInputEdgeLabels"
@@ -452,6 +471,7 @@ export function GraphInput({
         ></textarea>
 
         <div className="flex justify-between">
+          {/* Clear button to clear the input */}
           <button
             className="bg-clear-normal hover:bg-clear-hover
               active:bg-clear-active inline rounded-md px-2 py-1"
@@ -474,6 +494,7 @@ export function GraphInput({
           >
             Clear
           </button>
+          {/* Display input status */}
           {inputStatus ? (
             <span
               className="font-jetbrains bg-format-ok rounded-md text-right px-2
