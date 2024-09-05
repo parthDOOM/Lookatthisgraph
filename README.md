@@ -90,11 +90,17 @@ Make sure you have the following installed:
 
 Here are a few examples of how **Lookatthisgraph** works:
 
-- **Graph Creation Interface**:
-  ![Graph Creation](screenshots/graph_interface.png)
+- **Graph Creation Interface**
 
-- **Node Customization**:
-  ![Node Customization](screenshots/node_interface.png)
+<div align="center">
+  <img src="screenshots/graph_interface.png" alt="Graph Creation" />
+</div>
+
+- **Node Customization**
+
+<div align="center">
+  <img src="screenshots/node_interface.png" alt="Node Customization" />
+</div>
 
 - **Example of an Interactive Graph**:
   ![Interactive Graph](screenshots/sample.png)
