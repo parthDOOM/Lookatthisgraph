@@ -18,7 +18,7 @@
 - **Graph and Tree Creation**: Easily create nodes and edges, and visualize complex data structures.
 - **Customizable Node Colors**: Users can change the color of nodes to represent different data attributes.
 - **Interactive UI**: Interact with the graphs in real time, enabling a deep exploration of relationships between nodes.
-- **Designed for Competitive Programming**: The tool is built to support competitive programmers, helping them visualize and debug graph-related problems during contests.
+- **Designed for Competitive Programming**: The tool is built to support competitive programmers(Codeforces and Leetcode), helping them visualize and debug graph-related problems during contests.
 - **Lightweight and Fast**: Built with modern JavaScript frameworks for a fast and responsive user experience.
 
 ## Installation
