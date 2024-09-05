@@ -20,6 +20,7 @@
 - **Interactive UI**: Interact with the graphs in real time, enabling a deep exploration of relationships between nodes.
 - **Designed for Competitive Programming**: The tool is built to support competitive programmers(Codeforces and Leetcode), helping them visualize and debug graph-related problems during contests.
 - **Lightweight and Fast**: Built with modern JavaScript frameworks for a fast and responsive user experience.
+- **Use Cases**: Can be used to create directed/undirected graphs, trees and allows for bridges and cut vertices representations.
 
 ## Installation
 
@@ -85,6 +86,11 @@ Make sure you have the following installed:
 - Click on the nodes and edges to modify their properties.
 - Use the sidebar to select color schemes and toggle between different visualization modes.
 - Export graphs as PNGs for use in presentations or anything for that matter.
+
+## Input Format
+
+- a b : a connected to b
+- a b c : a conncted to b with an edge with weight of c
 
 ## Screenshots
 
