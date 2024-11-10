@@ -58,8 +58,8 @@ function App() {
       <div
         className={
           settings.darkMode
-            ? "dark bg-ovr text-text absolute w-full min-h-200 overflow-scroll"
-            : "light bg-ovr text-text absolute w-full min-h-200 overflow-scroll"
+            ? "dark bg-ovr text-text absolute w-full min-h-200 overflow-hide"
+            : "light bg-ovr text-text absolute w-full min-h-200 overflow-hide"
         }
       >
         <a
