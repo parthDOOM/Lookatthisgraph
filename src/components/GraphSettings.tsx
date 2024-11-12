@@ -10,22 +10,19 @@ interface Props {
 export function GraphSettings({ directed, settings, setSettings }: Props) {
   return (
     <>
-      {/* Graph settings container */}
       <div
         className="font-jetbrains flex flex-col border-2 rounded-lg bg-block
           shadow-shadow shadow border-border sm:ml-1/16 sm:mb-1/8 sm:mr-1/16
-          lg:m-0 lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:w-1/4
+          lg:m-0 lg:absolute lg:top-1/2 lg:-translate-y-[45%] lg:w-1/4
           hover:border-border-hover lg:right-1/24 xl:right-5/200 xl:w-1/5 p-3
-          space-y-2.5"
+          space-y-3"
       >
-        {/* Settings title */}
+        
         <h3 className="font-bold text-lg">Settings</h3>
 
         <br />
 
-        {/* Label Offset */}
         <h4 className="font-semibold">Label Offset</h4>
-        {/* Label Offset range input */}
         <input
           type="range"
           min={-2}
@@ -49,7 +46,6 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
             });
           }}
         />
-        {/* Label Offset range labels */}
         <div className="flex justify-between w-5/6 self-center">
           <div className="w-0">-2</div>
           <div className="w-0">-1</div>
@@ -60,7 +56,6 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
 
         <br />
 
-        {/* Theme toggle */}
         <SettingsToggleSection
           title={"Theme"}
           leftLabel={"Light"}
@@ -76,9 +71,7 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
 
         <br />
 
-        {/* Node Radius */}
         <h4 className="font-semibold">Node Radius</h4>
-        {/* Node Radius range input */}
         <input
           type="range"
           min={0}
@@ -105,9 +98,7 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
           }}
         />
 
-        {/* Line Thickness */}
         <h4 className="font-semibold">Line Thickness</h4>
-        {/* Line Thickness range input */}
         <input
           type="range"
           min={0}
@@ -137,9 +128,7 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
           }}
         />
 
-        {/* Edge Length */}
         <h4 className="font-semibold">Edge Length</h4>
-        {/* Edge Length range input */}
         <input
           type="range"
           min={0}
@@ -168,7 +157,6 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
 
         <br />
 
-        {/* Components toggle */}
         <SettingsToggleSection
           title={"Components"}
           leftLabel={"Hide"}
@@ -179,7 +167,6 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
           updateSettings={setSettings}
         />
 
-        {/* Bridges and Cut Vertices toggle */}
         {!directed ? (
           <SettingsToggleSection
             title={"Bridges and Cut Vertices"}
@@ -194,7 +181,6 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
           <></>
         )}
 
-        {/* Tree Mode toggle */}
         {!directed ? (
           <SettingsToggleSection
             title={"Tree Mode"}
@@ -209,13 +195,32 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
           <></>
         )}
 
-        {/* Lock Mode toggle */}
         <SettingsToggleSection
           title={"Lock Mode"}
           leftLabel={"Off"}
           rightLabel={"On"}
           toggleID={"settingsLockMode"}
           settingsName={"lockMode"}
+          settings={settings}
+          updateSettings={setSettings}
+        />
+
+        <SettingsToggleSection
+          title={"Fixed Mode"}
+          leftLabel={"Off"}
+          rightLabel={"On"}
+          toggleID={"settingsFixedMode"}
+          settingsName={"fixedMode"}
+          settings={settings}
+          updateSettings={setSettings}
+        />
+
+        <SettingsToggleSection
+          title={"Multiedge Mode"}
+          leftLabel={"Off"}
+          rightLabel={"On"}
+          toggleID={"settingsMultiedgeMode"}
+          settingsName={"multiedgeMode"}
           settings={settings}
           updateSettings={setSettings}
         />

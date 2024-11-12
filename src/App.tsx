@@ -51,6 +51,8 @@ function App() {
     showBridges: false,
     treeMode: false,
     lockMode: false,
+    fixedMode: false,
+    multiedgeMode: true,
   });
 
   return (
@@ -58,15 +60,17 @@ function App() {
       <div
         className={
           settings.darkMode
-            ? "dark bg-ovr text-text absolute w-full min-h-200 overflow-hide"
-            : "light bg-ovr text-text absolute w-full min-h-200 overflow-hide"
+            ? "dark bg-ovr text-text absolute w-full min-h-200 overflow-auto"
+            : "light bg-ovr text-text absolute w-full min-h-200 overflow-auto"
         }
       >
+
         <a
-          className="font-jetbrains text-sm flex sm:top-2 lg:top-2 sm:right-2
-            lg:right-2 absolute border-2 border-border rounded-lg px-2 py-1
-            justify-between items-center hover:border-border-hover z-10"
-          href="https://github.com/parthDOOM/lookatthisgraph"
+          className="font-jetbrains text-base sm:top-2 lg:top-2 sm:right-2
+            lg:right-2 absolute space-x-2 flex border-2 border-border rounded-lg
+            px-2 py-1 justify-between items-center hover:border-border-hover
+            z-20 bg-block"
+          href="https://github.com/parthDOOM/Lookatthisgraph"
         >
           {settings.darkMode ? (
             <img
