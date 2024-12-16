@@ -1,20 +1,20 @@
 import { CutMap, BridgeMap } from "../types";
 
-// Function to build bridges
 export function buildBridges(
   nodes: string[],
   adj: Map<string, string[]>,
   rev: Map<string, string[]>,
 ): [CutMap, BridgeMap] {
-  // Initialize variables
   let depth = new Map<string, number>();
   let memo = new Map<string, number>();
+
+  let edgeCnt = new Map<string, number>();
+
   let seen = new Set<string>();
+
   let coc = new Map<string, string[]>();
   let cutMap = new Map<string, boolean>();
-  let bridgeMap: BridgeMap = new Map<string, boolean>();
 
-  // Initialize depth, memo, coc, and cutMap for each node
   for (const u of nodes) {
     depth.set(u, 0);
     memo.set(u, 0);
@@ -22,16 +22,19 @@ export function buildBridges(
     cutMap.set(u, false);
   }
 
-  // Build coc (children of children) map
   for (const [u, vs] of adj.entries()) {
     for (const v of vs) {
+      const baseEdge = [u, v].sort().join(" ");
+      edgeCnt.set(
+        baseEdge,
+        edgeCnt.get(baseEdge) === undefined ? 1 : edgeCnt.get(baseEdge)! + 1,
+      );
       if (!coc.get(u)!.includes(v)) {
         coc.set(u, [...coc.get(u)!, v]);
       }
     }
   }
 
-  // Build coc map for reverse edges
   for (const [u, vs] of rev.entries()) {
     for (const v of vs) {
       if (!coc.get(u)!.includes(v)) {
@@ -40,7 +43,8 @@ export function buildBridges(
     }
   }
 
-  // Solve bridges
+  let bridgeMap: BridgeMap = new Map<string, boolean>();
+
   const solveBridges = (u: string, pu: string): void => {
     seen.add(u);
 
@@ -59,12 +63,13 @@ export function buildBridges(
     }
 
     if (depth.get(u)! !== 1 && memo.get(u)! === 0) {
+      const baseEdge = [u, pu].sort().join(" ");
+      if (edgeCnt.get(baseEdge)! >= 2) return;
       bridgeMap.set([u, pu].join(" "), true);
       bridgeMap.set([pu, u].join(" "), true);
     }
   };
 
-  // Find bridges for each unvisited node
   for (const u of nodes) {
     if (!seen.has(u)) {
       depth.set(u, 1);
@@ -72,7 +77,6 @@ export function buildBridges(
     }
   }
 
-  // Check if each edge is a bridge or not
   for (const [u, vs] of coc.entries()) {
     for (const v of vs) {
       if (!bridgeMap.has([u, v].join(" "))) {
@@ -84,17 +88,17 @@ export function buildBridges(
     }
   }
 
-  // Clear seen set and reset depth, memo, and cutMap for each node
   seen.clear();
+
   for (const u of nodes) {
     depth.set(u, 0);
     memo.set(u, 1_000_000);
     cutMap.set(u, false);
   }
 
-  // Solve cuts
   const solveCuts = (u: string, pu: string): void => {
     seen.add(u);
+
     let children = 0;
 
     for (const v of coc.get(u)!) {
@@ -119,7 +123,6 @@ export function buildBridges(
     }
   };
 
-  // Find cuts for each unvisited node
   for (const u of nodes) {
     if (!seen.has(u)) {
       depth.set(u, 1);
@@ -127,6 +130,5 @@ export function buildBridges(
     }
   }
 
-  // Return the cutMap and bridgeMap
   return [cutMap, bridgeMap];
 }

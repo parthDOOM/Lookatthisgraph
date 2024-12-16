@@ -1,6 +1,5 @@
 import { Layer, LayerMap, BackedgeMap } from "../types";
 
-// Function to build tree layers and backedge map
 export function buildTreeLayers(
   nodes: string[],
   adj: Map<string, string[]>,
@@ -14,7 +13,6 @@ export function buildTreeLayers(
   let seen = new Set<string>();
   let maxDepth = 0;
 
-  // Step 1: Construct the cocitation map
   for (const u of nodes) {
     coc.set(u, []);
   }
@@ -35,7 +33,6 @@ export function buildTreeLayers(
     }
   }
 
-  // Step 2: Find the maximum depth of the tree
   const findMaxDepth = (u: string, depth: number): void => {
     seen.add(u);
     maxDepth = Math.max(maxDepth, depth);
@@ -46,7 +43,6 @@ export function buildTreeLayers(
     }
   };
 
-  // Step 3: Build the layers and backedge map
   const buildLayers = (u: string, depth: number): void => {
     seen.add(u);
     layerMap.set(u, [depth, maxDepth]);
@@ -64,7 +60,6 @@ export function buildTreeLayers(
     }
   };
 
-  // Step 4: Iterate through each node and build layers if not already built
   for (const u of nodes) {
     if (!layerMap.has(u)) {
       maxDepth = 0;

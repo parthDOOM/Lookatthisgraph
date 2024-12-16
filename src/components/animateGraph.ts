@@ -1,13 +1,28 @@
-import { Graph } from "../types";
+import { TestCases } from "../types";
 import { Settings } from "../types";
-import { ColorMap, CutMap, LayerMap, BackedgeMap, BridgeMap } from "../types";
+import {
+  ColorMap,
+  CutMap,
+  LayerMap,
+  BackedgeMap,
+  BridgeMap,
+  MSTMap,
+} from "../types";
+
+import { stripNode } from "./utils";
 
 import { buildComponents } from "./graphComponents";
 import { buildSCComponents } from "./graphComponents";
 
 import { buildTreeLayers } from "./graphTreeLayers";
+import { buildBipartite } from "./graphBipartite";
 
 import { buildBridges } from "./graphBridges";
+
+import { buildMSTs } from "./graphMSTs";
+
+import { drawLine, drawArrow, drawBridge, drawEdgeLabel } from "./drawingTools.ts";
+import { drawCircle, drawHexagon, drawOctagon } from "./drawingTools.ts";
 
 interface Vector2D {
   x: number;
@@ -17,6 +32,7 @@ interface Vector2D {
 class Node {
   pos: Vector2D;
   vel: Vector2D = { x: 0, y: 0 };
+  markColor: number | undefined;
   selected: boolean;
   constructor(x: number, y: number) {
     this.pos = {
@@ -78,231 +94,6 @@ function euclidDist(u: Vector2D, v: Vector2D): number {
   return Math.hypot(u.x - v.x, u.y - v.y);
 }
 
-function drawArrow(
-  ctx: CanvasRenderingContext2D,
-  u: Vector2D,
-  v: Vector2D,
-  r: number,
-  toReverse: boolean,
-) {
-  const theta = Math.atan2(v.y - u.y, v.x - u.x);
-
-  let px = u.y - v.y;
-  let py = v.x - u.x;
-
-  const toFlip = r % 2 == 0;
-
-  px *= 0.375 * (toFlip ? -1 : 1) * Math.floor((r + 1) / 2);
-  py *= 0.375 * (toFlip ? -1 : 1) * Math.floor((r + 1) / 2);
-
-  ctx.lineWidth = 1.5 * nodeBorderWidthHalf;
-
-  ctx.strokeStyle = edgeColor;
-  ctx.fillStyle = edgeColor;
-
-  const mx = (u.x + v.x) / 2 + px;
-  const my = (u.y + v.y) / 2 + py;
-
-  ctx.beginPath();
-
-  const mult = toReverse ? -1 : 1;
-
-  ctx.moveTo(mx, my);
-  ctx.lineTo(
-    mx - mult * (nodeRadius / 2) * Math.cos(theta - Math.PI / 6),
-    my - mult * (nodeRadius / 2) * Math.sin(theta - Math.PI / 6),
-  );
-  ctx.lineTo(
-    mx - mult * (nodeRadius / 2) * Math.cos(theta + Math.PI / 6),
-    my - mult * (nodeRadius / 2) * Math.sin(theta + Math.PI / 6),
-  );
-  ctx.lineTo(mx, my);
-
-  ctx.fill();
-  ctx.stroke();
-}
-
-function drawBridge(ctx: CanvasRenderingContext2D, u: Vector2D, v: Vector2D) {
-  let px = u.y - v.y;
-  let py = v.x - u.x;
-
-  px *= nodeRadius / 5 / Math.hypot(px, py);
-  py *= nodeRadius / 5 / Math.hypot(px, py);
-
-  ctx.lineWidth = 2 * nodeBorderWidthHalf;
-
-  ctx.strokeStyle = edgeColor;
-
-  ctx.beginPath();
-
-  ctx.moveTo(u.x + px, u.y + py);
-  ctx.lineTo(v.x + px, v.y + py);
-
-  ctx.moveTo(u.x - px, u.y - py);
-  ctx.lineTo(v.x - px, v.y - py);
-
-  ctx.stroke();
-}
-
-function drawEdgeLabel(
-  ctx: CanvasRenderingContext2D,
-  u: Vector2D,
-  v: Vector2D,
-  r: number,
-  label: string,
-  toReverse: boolean,
-) {
-  let px = u.y - v.y;
-  let py = v.x - u.x;
-
-  const toFlip = r % 2 == 0;
-  const bx = px / euclidDist(u, v),
-    by = py / euclidDist(u, v);
-
-  px *= 0.37 * (toFlip ? -1 : 1) * Math.floor((r + 1) / 2);
-  py *= 0.37 * (toFlip ? -1 : 1) * Math.floor((r + 1) / 2);
-
-  const mult = toReverse ? -1 : 1;
-
-  px += mult * 13 * bx;
-  py += mult * 13 * by;
-
-  const mx = (u.x + v.x) / 2;
-  const my = (u.y + v.y) / 2;
-
-  ctx.lineWidth = 2 * nodeBorderWidthHalf;
-
-  ctx.beginPath();
-
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "center";
-
-  ctx.font = `${nodeRadius - 5}px JB`;
-  ctx.fillStyle = edgeLabelColor;
-
-  ctx.fillText(label, mx + px, my + py);
-}
-
-function drawOctagon(
-  ctx: CanvasRenderingContext2D,
-  u: Vector2D,
-  label: string,
-) {
-  const length = 14 + (3 * (nodeRadius - 16)) / 2;
-
-  let x = u.x;
-  let y = u.y;
-
-  if (Math.abs(u.y - nodeRadius - 2 * length) <= 5) {
-    y += nodeRadius + length;
-  } else {
-    y -= nodeRadius + length;
-  }
-
-  ctx.lineWidth = 2 * nodeBorderWidthHalf;
-
-  ctx.strokeStyle = nodeLabelOutlineColor;
-  ctx.fillStyle = fillColors[0];
-
-  ctx.beginPath();
-
-  let theta = 0;
-
-  for (let i = 0; i < 9; i++, theta += Math.PI / 4) {
-    const nx = x + (length - nodeBorderWidthHalf) * Math.cos(theta);
-    const ny = y + (length - nodeBorderWidthHalf) * Math.sin(theta);
-    ctx.lineTo(nx, ny);
-  }
-
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "center";
-
-  ctx.font = `${nodeRadius - 2}px JB`;
-  ctx.fillStyle = nodeLabelColor;
-  ctx.fillText(label, x, y);
-}
-
-function drawLine(
-  ctx: CanvasRenderingContext2D,
-  u: Vector2D,
-  v: Vector2D,
-  r: number,
-) {
-  let px = u.y - v.y;
-  let py = v.x - u.x;
-
-  const toFlip = r % 2 == 0;
-
-  px *= 0.5 * (toFlip ? -1 : 1) * Math.floor((r + 1) / 2);
-  py *= 0.5 * (toFlip ? -1 : 1) * Math.floor((r + 1) / 2);
-
-  ctx.lineWidth = 2 * nodeBorderWidthHalf;
-  ctx.strokeStyle = edgeColor;
-
-  ctx.beginPath();
-  ctx.moveTo(u.x, u.y);
-  ctx.bezierCurveTo(u.x + px, u.y + py, v.x + px, v.y + py, v.x, v.y);
-
-  ctx.stroke();
-}
-
-function drawCircle(ctx: CanvasRenderingContext2D, u: Vector2D, sel: boolean) {
-  ctx.beginPath();
-
-  ctx.arc(u.x, u.y, nodeRadius - nodeBorderWidthHalf, 0, 2 * Math.PI);
-
-  ctx.fill();
-  ctx.stroke();
-
-  if (sel) {
-    ctx.beginPath();
-    ctx.arc(
-      u.x,
-      u.y,
-      SELECTED_SCALE * (nodeRadius - nodeBorderWidthHalf),
-      0,
-      2 * Math.PI,
-    );
-    ctx.stroke();
-  }
-}
-
-function drawHexagon(ctx: CanvasRenderingContext2D, u: Vector2D, sel: boolean) {
-  ctx.beginPath();
-
-  const length = nodeRadius - nodeBorderWidthHalf;
-
-  let theta = Math.PI / 6;
-
-  for (let i = 0; i < 7; i++, theta += Math.PI / 3) {
-    const x = u.x + length * Math.cos(theta);
-    const y = u.y + length * Math.sin(theta);
-    ctx.lineTo(x, y);
-  }
-
-  ctx.fill();
-  ctx.stroke();
-
-  if (sel) {
-    ctx.beginPath();
-
-    const length = SELECTED_SCALE * (nodeRadius - nodeBorderWidthHalf);
-
-    let theta = Math.PI / 6;
-
-    for (let i = 0; i < 7; i++, theta += Math.PI / 3) {
-      const x = u.x + length * Math.cos(theta);
-      const y = u.y + length * Math.sin(theta);
-      ctx.lineTo(x, y);
-    }
-
-    ctx.stroke();
-  }
-}
-
 const FPS = 60;
 
 const STROKE_COLOR_LIGHT = "hsl(0, 0%, 10%)";
@@ -310,19 +101,18 @@ const TEXT_COLOR_LIGHT = "hsl(0, 0%, 10%)";
 const EDGE_COLOR_LIGHT = "hsl(0, 0%, 10%)";
 const EDGE_LABEL_LIGHT = "hsl(30, 50%, 40%)";
 const NODE_LABEL_LIGHT = "hsl(10, 50%, 40%)";
-const NODE_LABEL_OUTLINE_LIGHT = "hsl(10, 10%, 70%)";
+const NODE_LABEL_OUTLINE_LIGHT = "hsl(10, 2%, 70%)";
 
 const STROKE_COLOR_DARK = "hsl(0, 0%, 90%)";
 const TEXT_COLOR_DARK = "hsl(0, 0%, 90%)";
 const EDGE_COLOR_DARK = "hsl(0, 0%, 90%)";
 const EDGE_LABEL_DARK = "hsl(30, 70%, 60%)";
 const NODE_LABEL_DARK = "hsl(10, 70%, 60%)";
-const NODE_LABEL_OUTLINE_DARK = "hsl(10, 10%, 30%)";
+const NODE_LABEL_OUTLINE_DARK = "hsl(10, 2%, 30%)";
 
 const TEXT_Y_OFFSET = 1;
 
 const NODE_FRICTION = 0.05;
-const SELECTED_SCALE = 1.25;
 
 const CANVAS_FIELD_DIST = 50;
 
@@ -350,6 +140,94 @@ const FILL_COLORS_DARK = [
   "#176249",
   "#7a366b",
   "#58398f",
+];
+
+const FILL_PALETTE_LIGHT = [
+  "",
+  "",
+  "#eeeeee",
+  "#eece7e",
+  "#e2b55e",
+  "#dede7e",
+  "#c2ce62",
+  "#bede7e",
+  "#adcd63",
+  "#8ede7e",
+  "#7dcd63",
+  "#8ece9e",
+  "#7bbe93",
+  "#8ecece",
+  "#7eb8b8",
+  "#8ebede",
+  "#7eaece",
+  "#8eaede",
+  "#7e98cd",
+  "#6e93de",
+  "#657ece",
+  "#7e90e5",
+  "#6e80d2",
+  "#8589e5",
+  "#7579d5",
+  "#9480e5",
+  "#8070d2",
+  "#a47de5",
+  "#946ad0",
+  "#b47dd5",
+  "#a46ac0",
+  "#c47dc5",
+  "#b46ab0",
+  "#c47da5",
+  "#b46a90",
+  "#c48d95",
+  "#b47a80",
+  "#d48d75",
+  "#c47a60",
+  "#e4ad72",
+  "#d49a70",
+];
+
+const FILL_PALETTE_DARK = [
+  "",
+  "",
+  "#333333",
+  "#947d12",
+  "#846a00",
+  "#727220",
+  "#525e02",
+  "#5e7e1e",
+  "#3e5e0e",
+  "#3e731e",
+  "#1e530e",
+  "#4e705e",
+  "#335344",
+  "#4e6c6c",
+  "#305555",
+  "#3e5e7c",
+  "#2e4a60",
+  "#2e4e70",
+  "#1f3f60",
+  "#0e3070",
+  "#00206e",
+  "#2e4095",
+  "#1e3085",
+  "#454995",
+  "#353985",
+  "#544095",
+  "#403082",
+  "#643d95",
+  "#542a80",
+  "#743d85",
+  "#602d70",
+  "#843d75",
+  "#702d60",
+  "#843d55",
+  "#702d40",
+  "#844d45",
+  "#703d30",
+  "#944d25",
+  "#803d10",
+  "#a46d22",
+  "#945a10",
 ];
 
 const FILL_COLORS_LENGTH = 10;
@@ -380,14 +258,23 @@ let oldDirected = false;
 let directed = false;
 
 let settings: Settings = {
+  expandedCanvas: false,
+  markBorder: "double",
+  markColor: 1,
+  settingsFormat: "general",
   labelOffset: 0,
   darkMode: true,
   nodeRadius: 15,
+  fontSize: 15,
   nodeBorderWidthHalf: 15,
   edgeLength: 10,
+  edgeLabelSeparation: 10,
   showComponents: false,
   showBridges: false,
+  showMSTs: false,
   treeMode: false,
+  bipartiteMode: false,
+  markedNodes: false,
   lockMode: false,
   fixedMode: false,
   multiedgeMode: true,
@@ -396,6 +283,7 @@ let settings: Settings = {
 let lastDeletedNodePos: Vector2D = { x: -1, y: -1 };
 
 let nodes: string[] = [];
+let nodesToConceal = new Set<String>();
 let nodeMap = new Map<string, Node>();
 
 let nodeDist: number = 40;
@@ -413,19 +301,23 @@ let edgeLabels = new Map<string, string>();
 let adj = new Map<string, string[]>();
 let rev = new Map<string, string[]>();
 
+let adjSet = new Map<string, Set<string>>(); // PERF: used to compute `isEdge`
+
 let colorMap: ColorMap | undefined = undefined;
 let layerMap: LayerMap | undefined = undefined;
 
 let backedgeMap: BackedgeMap | undefined = undefined;
 
+let mstMap: MSTMap | undefined = undefined;
+
 let cutMap: CutMap | undefined = undefined;
 let bridgeMap: BridgeMap | undefined = undefined;
 
-function updateNodes(graph: Graph): void {
+function updateNodes(graphNodes: string[]): void {
   let deletedNodes: string[] = [];
 
   for (const u of nodes) {
-    if (!graph.nodes.includes(u)) {
+    if (!graphNodes.includes(u)) {
       deletedNodes.push(u);
     }
   }
@@ -437,8 +329,8 @@ function updateNodes(graph: Graph): void {
     nodeMap.delete(u);
   }
 
-  for (let i = 0; i < graph.nodes.length; i++) {
-    const u = graph.nodes[i];
+  for (let i = 0; i < graphNodes.length; i++) {
+    const u = graphNodes[i];
 
     if (!nodes.includes(u)) {
       let coords = generateRandomCoords();
@@ -454,11 +346,11 @@ function updateNodes(graph: Graph): void {
     }
   }
 
-  nodes = graph.nodes;
+  nodes = graphNodes;
 }
 
-function updateEdges(graph: Graph): void {
-  edges = graph.edges;
+function updateEdges(graphEdges: string[]): void {
+  edges = graphEdges;
   edgeToPos.clear();
   for (const e of edges) {
     const [u, v, rStr] = e.split(" ");
@@ -474,11 +366,13 @@ function updateEdges(graph: Graph): void {
 
 function updateVelocities() {
   for (const u of nodes) {
+    if (nodesToConceal.has(u)) continue;
     if (nodeMap.get(u)!.selected && settings.fixedMode) continue;
 
     const uPos = nodeMap.get(u)!.pos;
 
     for (const v of nodes) {
+      if (nodesToConceal.has(v)) continue;
       if (v !== u) {
         const vPos = nodeMap.get(v)!.pos;
 
@@ -486,18 +380,7 @@ function updateVelocities() {
 
         let aMag = 150_000 / (2 * Math.pow(dist, 4.5));
 
-        let isEdge = false;
-
-        const toMatch = [u, v].join(" ");
-        const toMatchRev = [v, u].join(" ");
-        const toMatchLength = toMatch.length;
-
-        for (const e of edges) {
-          const edgBase = e.substring(0, toMatchLength);
-          if (edgBase === toMatch || edgBase === toMatchRev) {
-            isEdge = true;
-          }
-        }
+        let isEdge = adjSet.get(u)!.has(v) || adjSet.get(v)!.has(u);
 
         if (isEdge) {
           aMag = Math.pow(Math.abs(dist - nodeDist), 1.6) / 100_000;
@@ -539,7 +422,11 @@ function updateVelocities() {
       y: clamp((nodeMap.get(u)!.vel.y + ayB) * (1 - NODE_FRICTION), -100, 100),
     };
 
-    if (settings.treeMode && layerMap !== undefined) {
+    if (layerMap !== undefined) {
+      nodeMap.get(u)!.vel = {
+        x: nodeMap.get(u)!.vel.x,
+        y: 0,
+      };
       const depth = layerMap.get(u)![0];
       const maxDepth = layerMap.get(u)![1];
 
@@ -598,60 +485,143 @@ function buildSettings(): void {
 
   labelOffset = settings.labelOffset;
 
+  colorMap = undefined;
+  layerMap = undefined;
+  backedgeMap = undefined;
+  cutMap = undefined;
+  bridgeMap = undefined;
+  mstMap = undefined;
+
+  if (settings.bipartiteMode) {
+    let isBipartite: boolean;
+    [isBipartite, colorMap, layerMap] = buildBipartite(nodes, adj);
+    localStorage.setItem("isBipartite", isBipartite.toString());
+    if (!isBipartite) {
+      colorMap = undefined;
+      layerMap = undefined;
+    }
+  }
+
   if (directed) {
     if (settings.showComponents) {
       colorMap = buildSCComponents(nodes, adj, rev);
-    } else {
-      colorMap = undefined;
     }
-    layerMap = undefined;
-    backedgeMap = undefined;
-    cutMap = undefined;
-    bridgeMap = undefined;
   } else {
     if (settings.showComponents) {
       colorMap = buildComponents(nodes, adj, rev);
-    } else {
-      colorMap = undefined;
     }
     if (settings.treeMode) {
       [layerMap, backedgeMap] = buildTreeLayers(nodes, adj, rev);
-    } else {
-      layerMap = undefined;
-      backedgeMap = undefined;
     }
     if (settings.showBridges) {
       [cutMap, bridgeMap] = buildBridges(nodes, adj, rev);
-    } else {
-      cutMap = undefined;
-      bridgeMap = undefined;
+    }
+    if (settings.showMSTs) {
+      mstMap = buildMSTs(nodes, edges, edgeLabels);
     }
   }
 }
 
-export function updateGraphEdges(graph: Graph) {
-  updateNodes(graph);
-  updateEdges(graph);
+export function updateGraph(testCases: TestCases) {
+  nodesToConceal.clear();
 
-  adj = graph.adj;
-  rev = graph.rev;
+  let isEdgeNumeric = true;
 
-  nodeLabels = graph.nodeLabels;
-  edgeLabels = graph.edgeLabels;
+  let rawNodes: string[] = [];
+  let rawEdges: string[] = [];
+
+  let rawAdj = new Map<string, string[]>();
+  let rawRev = new Map<string, string[]>();
+
+  let rawEdgeLabels = new Map<string, string>();
+  let rawNodeLabels = new Map<string, string>();
+
+  testCases.forEach((testCase, _) => {
+    if (testCase.inputFormat === "edges") {
+      testCase.graphParChild.nodes.map((u) => nodesToConceal.add(u));
+    } else {
+      testCase.graphEdges.nodes.map((u) => nodesToConceal.add(u));
+    }
+
+    rawNodes = [...rawNodes, ...testCase.graphEdges.nodes];
+    rawNodes = [...rawNodes, ...testCase.graphParChild.nodes];
+
+    rawEdges = [...rawEdges, ...testCase.graphEdges.edges];
+    rawEdges = [...rawEdges, ...testCase.graphParChild.edges];
+
+    testCase.graphEdges.adj.forEach((v, k) => {
+      rawAdj.set(k, v);
+    });
+    testCase.graphParChild.adj.forEach((v, k) => {
+      rawAdj.set(k, v);
+    });
+
+    testCase.graphEdges.rev.forEach((v, k) => {
+      rawRev.set(k, v);
+    });
+    testCase.graphParChild.rev.forEach((v, k) => {
+      rawRev.set(k, v);
+    });
+
+    testCase.graphEdges.edgeLabels.forEach((v, k) => {
+      rawEdgeLabels.set(k, v);
+    });
+    testCase.graphParChild.edgeLabels.forEach((v, k) => {
+      rawEdgeLabels.set(k, v);
+    });
+
+    testCase.graphEdges.nodeLabels.forEach((v, k) => {
+      rawNodeLabels.set(k, v);
+    });
+    testCase.graphParChild.nodeLabels.forEach((v, k) => {
+      rawNodeLabels.set(k, v);
+    });
+  });
+
+  for (const e of rawEdges) {
+    if (
+      rawEdgeLabels.get(e) === undefined ||
+      !isInteger(rawEdgeLabels.get(e)!)
+    ) {
+      isEdgeNumeric = false;
+      break;
+    }
+  }
+
+  localStorage.setItem("isEdgeNumeric", isEdgeNumeric.toString());
+
+  updateNodes(rawNodes);
+  updateEdges(rawEdges);
+
+  adj = new Map<string, string[]>(rawAdj);
+  rev = new Map<string, string[]>(rawRev);
+
+  adjSet = new Map<string, Set<string>>();
+
+  adj.forEach((vs, u) => {
+    adjSet.set(u, new Set<string>(vs));
+  });
+
+  nodeLabels = new Map<string, string>(rawNodeLabels);
+  edgeLabels = new Map<string, string>(rawEdgeLabels);
+
+  let isBipartite: boolean;
+  [isBipartite] = buildBipartite(nodes, adj);
+  localStorage.setItem("isBipartite", isBipartite.toString());
 
   buildSettings();
 }
 
-export function resizeGraphEdges(width: number, height: number) {
+export function resizeGraph(width: number, height: number) {
   canvasWidth = width;
   canvasHeight = height;
 }
 
-export function updateDirectedEdges(d: boolean) {
+export function updateDirected(d: boolean) {
   directed = d;
 }
 
-export function updateSettingsEdges(s: Settings) {
+export function updateSettings(s: Settings) {
   settings = s;
   buildSettings();
 }
@@ -668,6 +638,8 @@ function renderNodes(ctx: CanvasRenderingContext2D) {
   for (let i = 0; i < nodes.length; i++) {
     const u = nodes[i];
 
+    if (nodesToConceal.has(u)) continue;
+
     const node = nodeMap.get(u)!;
 
     ctx.lineWidth = 2 * nodeBorderWidthHalf;
@@ -681,25 +653,50 @@ function renderNodes(ctx: CanvasRenderingContext2D) {
           : colorMap.get(nodes[i])! % FILL_COLORS_LENGTH
       ];
 
+    if (nodeMap.get(nodes[i])!.markColor !== undefined) {
+      const idx = nodeMap.get(nodes[i])!.markColor!;
+      const color = settings.darkMode
+        ? FILL_PALETTE_DARK[idx]
+        : FILL_PALETTE_LIGHT[idx];
+      ctx.fillStyle = color;
+    }
+
     if (settings.showBridges && cutMap !== undefined && cutMap.get(u)) {
-      drawHexagon(ctx, node.pos, node.selected);
+      drawHexagon(
+        ctx,
+        node.pos,
+        node.selected,
+        nodeBorderWidthHalf,
+        nodeRadius,
+      );
     } else {
-      drawCircle(ctx, node.pos, node.selected);
+      drawCircle(ctx, node.pos, node.selected, nodeBorderWidthHalf, nodeRadius);
     }
 
     ctx.textBaseline = "middle";
     ctx.textAlign = "center";
 
-    ctx.font = `${nodeRadius}px JB`;
+    const s = stripNode(u);
+
+    ctx.font = `${settings.fontSize + 2}px JB`;
     ctx.fillStyle = textColor;
     ctx.fillText(
-      isInteger(u) ? (parseInt(u, 10) + labelOffset).toString() : u,
+      isInteger(s) ? (parseInt(s, 10) + labelOffset).toString() : s,
       node!.pos.x,
       node!.pos.y + TEXT_Y_OFFSET,
     );
 
     if (nodeLabels.has(nodes[i])) {
-      drawOctagon(ctx, node.pos, nodeLabels.get(nodes[i])!);
+      drawOctagon(
+        ctx,
+        node.pos,
+        nodeLabels.get(nodes[i])!,
+        settings,
+        nodeBorderWidthHalf,
+        nodeRadius,
+        nodeLabelColor,
+        nodeLabelOutlineColor,
+      );
     }
   }
 }
@@ -718,6 +715,8 @@ function renderEdges(ctx: CanvasRenderingContext2D) {
   }
 
   for (const e of renderedEdges) {
+    if (nodesToConceal.has(e.split(" ")[0])) continue;
+
     let pt1 = nodeMap.get(e.split(" ")[0])!.pos;
     let pt2 = nodeMap.get(e.split(" ")[1])!.pos;
     let toReverse = false;
@@ -742,21 +741,41 @@ function renderEdges(ctx: CanvasRenderingContext2D) {
 
     ctx.strokeStyle = strokeColor;
 
+    let thickness = nodeBorderWidthHalf;
+
+    if (
+      localStorage.getItem("isEdgeNumeric") === "true" &&
+      settings.showMSTs &&
+      mstMap !== undefined &&
+      mstMap.get(e)
+    ) {
+      thickness *= 2;
+    }
+
     if (
       settings.showBridges &&
       bridgeMap !== undefined &&
       edrMax === 0 &&
       bridgeMap.get(eBase)
     ) {
-      drawBridge(ctx, pt1, pt2);
+      drawBridge(ctx, pt1, pt2, thickness, nodeRadius, edgeColor);
     } else {
-      drawLine(ctx, pt1, pt2, edr);
+      drawLine(ctx, pt1, pt2, edr, thickness, edgeColor);
     }
 
     ctx.setLineDash([]);
 
     if (directed) {
-      drawArrow(ctx, pt1, pt2, edr, toReverse);
+      drawArrow(
+        ctx,
+        pt1,
+        pt2,
+        edr,
+        toReverse,
+        thickness,
+        nodeRadius,
+        edgeColor,
+      );
     }
 
     let labelReverse = false;
@@ -764,19 +783,49 @@ function renderEdges(ctx: CanvasRenderingContext2D) {
 
     if (edgeLabels.has(e)) {
       if (!edgeLabels.has(eRev)) {
-        drawEdgeLabel(ctx, pt1, pt2, edr, edgeLabels.get(e)!, labelReverse);
+        drawEdgeLabel(
+          ctx,
+          pt1,
+          pt2,
+          edr,
+          edgeLabels.get(e)!,
+          labelReverse,
+          settings,
+          nodeBorderWidthHalf,
+          edgeLabelColor,
+        );
       } else {
         if (e < eRev) {
-          drawEdgeLabel(ctx, pt1, pt2, edr, edgeLabels.get(e)!, labelReverse);
+          drawEdgeLabel(
+            ctx,
+            pt1,
+            pt2,
+            edr,
+            edgeLabels.get(e)!,
+            labelReverse,
+            settings,
+            nodeBorderWidthHalf,
+            edgeLabelColor,
+          );
         } else {
-          drawEdgeLabel(ctx, pt1, pt2, edr, edgeLabels.get(e)!, labelReverse);
+          drawEdgeLabel(
+            ctx,
+            pt1,
+            pt2,
+            edr,
+            edgeLabels.get(e)!,
+            labelReverse,
+            settings,
+            nodeBorderWidthHalf,
+            edgeLabelColor,
+          );
         }
       }
     }
   }
 }
 
-export function animateGraphEdges(
+export function animateGraph(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   setImage: React.Dispatch<React.SetStateAction<string | undefined>>,
@@ -831,9 +880,15 @@ export function animateGraphEdges(
   canvas.addEventListener("pointerup", (event) => {
     event.preventDefault();
     const curMS = performance.now();
-    if (curMS - prevMS <= 250 && draggedNodes.length) {
-      const sel = nodeMap.get(draggedNodes[0])!.selected;
-      nodeMap.get(draggedNodes[0])!.selected = !sel;
+    if (curMS - prevMS <= 200 && draggedNodes.length) {
+      const u = draggedNodes[0];
+      const sel = nodeMap.get(u)!.selected;
+      if (settings.markedNodes) nodeMap.get(u)!.selected = !sel;
+      if (settings.markColor === 2) {
+        nodeMap.get(u)!.markColor = undefined;
+      } else if (settings.markColor >= 3) {
+        nodeMap.get(u)!.markColor = settings.markColor;
+      }
     }
     draggedNodes = [];
     canvas.style.cursor = "default";

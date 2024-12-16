@@ -10,7 +10,7 @@ interface Props {
   setSettings: React.Dispatch<React.SetStateAction<Settings>>;
 }
 
-export function SettingsToggleSection({
+export function SettingsToggleSectionDimmed({
   title,
   leftLabel,
   rightLabel,
@@ -21,17 +21,19 @@ export function SettingsToggleSection({
 }: Props) {
   return (
     <>
-      <h4 className="font-semibold text-base">{title}</h4>
+      <h4 className="font-semibold text-base text-border-hover">
+        <s>{title}</s>
+      </h4>
       <div className="flex font-light text-sm justify-between">
         <span>
           <span>
             {!settings[settingsName] ? (
-              <span className="text-selected p-0 hover:cursor-pointer">
+              <span className="text-border-active p-0 hover:cursor-pointer">
                 {leftLabel}
               </span>
             ) : (
               <span
-                className="p-0 hover:cursor-pointer"
+                className="p-0 hover:cursor-pointer text-border-hover"
                 onClick={() => {
                   setSettings((settings) => {
                     const newSettings = {
@@ -78,15 +80,15 @@ export function SettingsToggleSection({
               </span>
             )}
           </span>
-          <span> | </span>
+          <span className="text-border-hover"> | </span>
           <span>
             {settings[settingsName] ? (
-              <span className="text-selected p-0 hover:cursor-pointer">
+              <span className="text-border-active p-0 hover:cursor-pointer">
                 {rightLabel}
               </span>
             ) : (
               <span
-                className="p-0 hover:cursor-pointer"
+                className="p-0 hover:cursor-pointer text-border-hover"
                 onClick={() => {
                   setSettings((settings) => {
                     const newSettings = {
@@ -182,7 +184,7 @@ export function SettingsToggleSection({
           <span
             className="absolute top-0 left-0 w-9 h-5 cursor-pointer rounded-full
               bg-toggle-uncheck border-none transition-all duration-75
-              hover:bg-toggle-hover peer-checked:bg-toggle-check"
+              hover:bg-toggle-hover peer-checked:bg-clear-active"
           ></span>
           <span
             className="absolute top-0.5 left-0.5 w-4 h-4 bg-toggle-circle
