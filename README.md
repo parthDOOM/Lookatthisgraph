@@ -1,134 +1,230 @@
-# Lookatthisgraph
+# Another Graph Editor
 
-**Lookatthisgraph** is a web-based data visualization tool that allows users to create, interact with, and visualize graphs and trees. Designed for ease of use and functionality, it is particularly useful during competitive programming contests. The tool supports the creation of customizable graphs with colored nodes, offering an intuitive interface for users to explore graph theory concepts.
 
-![Lookatthisgraph Banner](screenshots/page.png)
+Made with React, Typescript, Tailwind CSS, and HTML Canvas.
 
-## Table of Contents
+<p align="center">
+    <img src="screenshots/main.png?" />
+</p>
 
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Technologies Used](#technologies-used)
-- [Contributing](#contributing)
+<p align="center">
+<em>A Multi-Component Graph</em>
+</p>
 
 ## Features
 
-- **Graph and Tree Creation**: Easily create nodes and edges, and visualize complex data structures.
-- **Customizable Node Colors**: Users can change the color of nodes to represent different data attributes.
-- **Interactive UI**: Interact with the graphs in real time, enabling a deep exploration of relationships between nodes.
-- **Designed for Competitive Programming**: The tool is built to support competitive programmers(Codeforces and Leetcode), helping them visualize and debug graph-related problems during contests.
-- **Lightweight and Fast**: Built with modern JavaScript frameworks for a fast and responsive user experience.
-- **Use Cases**: Can be used to create directed/undirected graphs, trees and allows for bridges and cut vertices representations.
+- Common input formats:
+  - A list of edges `u v [w]`, denoting an edge from node `u` to node `v`, where
+  `w` is an optional edge label.
+  - Leetcode-style adjacency list strings such as `[[2,4],[1,3],[2,1],[4,3]]`;
+  ensure that you do **not** put any spaces inside the string.
+  - A parent and child array, where `p[i]` and `c[i]` denote an edge from
+  node `p[i]` to `c[i]`.
+  - Assuming a nonzero number of nodes, you may also label each node. This
+  is useful in scenarios where you are offered an array `a`, where `a[i]`
+  corresponds to the value at node `i` (simply copy and paste the given array into
+  **node labels**).
+- Label offset (to convert a zero-indexed input to one-indexed and vice versa)
+- Dark/light themes
+- Undirected/directed graphs
+- Normal/tree/bipartite modes
+- Lock mode (fix marked nodes in place)
+- Bridges and cut vertices
+- (Strongly-connected) components
+- Minimum spanning tree(s)
+- Multi-edge support
+- Multi-testcase support
 
-## Installation
+<p align="center">
+    <img src="screenshots/parentChild.png?" />
+</p>
 
-To run **Lookatthisgraph** locally on your machine, follow these steps:
+<p align="center">
+<em>A Demonstration of the Parent-Child Input Format</em>
+</p>
 
-### Prerequisites
+<p align="center">
+    <img src="screenshots/leetcode.png?" />
+</p>
 
-Make sure you have the following installed:
+<p align="center">
+<em>Leetcode-Style Adjacency Lists Work as Well Under Edges</em>
+</p>
 
-- **Node.js** (v16 or higher)
-- **npm** or **yarn**
-- A modern web browser
-
-### Steps
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/parthDOOM/Lookatthisgraph.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
-   cd Lookatthisgraph
-   ```
-
-3. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-   or if you prefer yarn:
-
-   ```bash
-   yarn install
-   ```
-
-4. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-   or for yarn:
-
-   ```bash
-   yarn dev
-   ```
-
-5. Open your browser and navigate to:
-
-   ```
-   http://localhost:5173
-   ```
-
-   The project should now be running on your local machine!
+> [!NOTE]
+> *Tree Mode* and *Bridges* are only available for undirected graphs.
 
 ## Usage
 
-- Once the server is running, you can interact with the interface to create new graphs.
-- Click on the nodes and edges to modify their properties.
-- Use the sidebar to select color schemes and toggle between different visualization modes.
-- Export graphs as PNGs for use in presentations or anything for that matter.
+Adjust the input format to your liking and type away!
 
-## Input Format
+> [!IMPORTANT]
+> If you're coming from a platform like [Codeforces](https://codeforces.com/)
+> and the input data contains `n m`, representing the number of vertices and
+> edges respectively, please **omit** it when copy-pasting the test case data.
+> Similarly, if you have an array `p` where `p[i]` represents the parent of `i`,
+> double check that the parent array lines up with the child array.
 
-- a b : a connected to b
-- a b c : a conncted to b with an edge with weight of c
+> [!TIP]
+> To enter a single node, enter `u` or `u u`.
 
-## Screenshots
+> [!TIP]
+> When entering node labels, if you want to skip over a particular node,
+> use the character '_' as a placeholder.
 
-Here are a few examples of how **Lookatthisgraph** works:
+## Handling Multiple Testcases/Graphs
 
-- **Graph Creation Interface**
+To add a new testcase, click the green button to add a new "tab". You
+may enter each test case into its own separate tab. To delete a tab, hover
+over the desired tab for a moment, and a red cross will show up. Click
+the red cross to delete it.
 
-<div align="center">
-  <img src="screenshots/graph_interface.png" alt="Graph Creation" />
-</div>
+> [!CAUTION]
+> When you delete a tab, all graph data within that tab will be destroyed,
+> so please proceed with caution.
 
-- **Node Customization**
+## Node Coloring
 
-<div align="center">
-  <img src="screenshots/node_interface.png" alt="Node Customization" />
-</div>
+Using the palette situated above the main canvas, you may select a color
+and upon clicking a node, it'll take on your selected color.
 
-- **Example of an Interactive Graph**:
-  ![Interactive Graph](screenshots/sample.png)
+> [!CAUTION]
+> Your color will override those produced by *Components* or *Bipartite Mode*.
 
-  **Dark Mode**
-  ![Dark Mode](screenshots/dark.png)
+The top leftmost circle in the palette resets the cursor to normal, while
+the red circle just below it erases the color of any colored node.
 
-## Technologies Used
+## Configuration
 
-**Lookatthisgraph** is built using modern web development technologies, including:
+There are two means of configuration: **General** and **Appearance**, the
+former handles the main "modes" while the latter lets you control how
+the graph is rendered.
 
-- **TypeScript**: For strong typing and scalability.
-- **JavaScript**: Core logic of the project.
-- **Tailwind CSS**: A utility-first CSS framework for styling.
-- **Vite**: A build tool that provides a faster and leaner development experience for modern web projects.
+### General
 
-## Contributing
+#### Components
+This mode reveals the connected components of a graph.
 
-If you'd like to contribute to **Lookatthisgraph**, feel free to fork the repository and submit pull requests. Contributions can include bug fixes, new features, or performance improvements.
+> [!NOTE]
+> For directed graphs, **strongly connected components** are displayed.
 
-### Steps to Contribute
+Components are distinguished via different colors.
 
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Submit a pull request, ensuring all tests pass and the code is well-documented.
+#### Bridges and Cut Vertices
+
+A *bridge* is an edge that increases the number of components when removed.
+A *cut vertice* (aka articulation point) is defined similarly.
+
+Bridges are represented with two parallel lines, while cut vertices take
+on a hexagonal shape.
+
+#### Minimum Spanning Tree(s)
+
+If *all* edge weights are provided and they are of numeric value, this mode
+becomes available. MSTs are computed for each component, and edges that
+are part of the MSTs are bolded.
+
+<p align="center">
+    <img src="screenshots/mst.png?" />
+</p>
+
+<p align="center">
+<em>A Minimum Spanning Tree</em>
+</p>
+
+#### Tree Mode
+
+In this mode, the *first* node that appears in the input data becomes the root.
+Nodes are arranged in "layers" according to their position within the tree
+hierarchy, allowing for easier visualization.
+
+<p align="center">
+    <img src="screenshots/twoRootBefore.png?" />
+</p>
+
+<p align="center">
+<em>Node 1 is the Original Root</em>
+</p>
+
+To set some arbitrary root, say node 2, as the root, under the *Roots*
+section, type `2`, and it'll become the root of the tree. In scenarios where
+you have multiple trees, simply type a comma-separated list of all the roots.
+A caveat is that if you type two nodes that belong to the same tree under
+*Roots*, the one that comes first takes precedence, i.e., if you type
+`2 1`, then node 2 is the root, but if you type `1 2`, then node 1 is the root.
+
+<p align="center">
+    <img src="screenshots/twoRootAfter.png?" />
+</p>
+
+<p align="center">
+<em>Node 2 is the New Root</em>
+</p>
+
+What happens if the graph isn't a tree? Well, the **DFS Tree** would be
+displayed instead, where *back edges* are displayed as dotted lines.
+
+<p align="center">
+    <img src="screenshots/dfsTree.png?" />
+</p>
+
+<p align="center">
+<em>A DFS Tree With Bridges and Cut Vertices Shown</em>
+</p>
+
+#### Bipartite Mode
+
+Bipartite graphs may also be displayed. Nodes of each disjoint set are
+colored (and positioned) differently.
+
+<p align="center">
+    <img src="screenshots/bipartite.png?" />
+</p>
+
+<p align="center">
+<em>A Bipartite Graph</em>
+</p>
+
+> [!CAUTION]
+> When enabled, both *Tree Mode* and *Components* will be *unset*. This works
+> in reverse as well, when either *Tree Mode* or *Components* is set, *Bipartite
+> Mode* will be turned off.
+
+> [!TIP]
+> If the graph isn't bipartite, this mode becomes unavailable.
+
+#### Lock Mode
+
+By default, the graph is in *Force Mode*, where edges hold everything together
+and nodes repel one another, creating a cool space-like effect. To disable
+this behavior, simply toggle *Lock Mode*.
+
+#### Mark/Unmark Nodes on Click
+
+When enabled, you may *mark* a node by clicking it. These nodes have a double
+border.
+
+> [!TIP]
+> If you prefer to color nodes instead, you might want to disable this
+> feature.
+
+#### Fixed Mode
+
+If you wish to fix *marked nodes* in place, toggle *Fixed Mode*.
+
+#### Multiedge Mode
+
+This mode allows for multiple edges between two nodes, it's enabled by
+default. When disabled, no matter how many times you enter the same edge,
+only a single one would be registered.
+
+### Appearance
+
+In addition to the light/dark themes, there are multiple sliders available
+for altering parameters like the node radius, font size, etc. Your settings
+are saved across refreshes using `localStorage`.
+
+## Credits
+
+- [Codeforces](https://codeforces.com/)
+- [-is-this-fft-'s Blog on the DFS Tree](https://codeforces.com/blog/entry/68138)
