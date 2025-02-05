@@ -29,6 +29,7 @@ function App() {
   const [inputs, setInputs] = useState<number[]>([0]);
 
   const [settings, setSettings] = useState<Settings>({
+    drawMode: "node",
     expandedCanvas: false,
     markBorder: "double",
     markColor: 1,
@@ -78,9 +79,9 @@ function App() {
         className={
           settings.darkMode
             ? `dark bg-ovr text-text absolute w-full min-h-[840px]
-              overflow-hide`
+              overflow-scroll`
             : `light bg-ovr text-text absolute w-full min-h-[840px]
-              overflow-hide`
+              overflow-scroll`
         }
       >
         <div
@@ -95,11 +96,15 @@ function App() {
               rounded-lg bg-block left-0 top-8 w-100 invisible
               group-hover:visible max-h-28 no-scrollbar overflow-scroll"
           >
+            <p>4 Feb 2025</p>
+            <ul className="list-disc list-inside">
+              <li>Make node background <b>transparent</b> by default</li>
+              <li>Add <b>draw</b> and <b>erase</b> modes</li>
+            </ul>
+            <hr className="border-dashed border-border" />
             <p>9 Dec 2024</p>
             <ul className="list-disc list-inside">
-              <li>
-                Add toggle button to expand/shrink canvas
-              </li>
+              <li>Add toggle button to expand/shrink canvas</li>
             </ul>
             <hr className="border-dashed border-border" />
             <p>7 Dec 2024</p>
@@ -148,7 +153,7 @@ function App() {
             lg:right-2 absolute space-x-2 flex border-2 border-border rounded-lg
             px-2 py-1 justify-between items-center hover:border-border-hover
             z-20 bg-block"
-          href="https://github.com/parthDOOM/Lookatthisgraph"
+          href="https://github.com/anAcc22/another_graph_editor"
         >
           {settings.darkMode ? (
             <img
