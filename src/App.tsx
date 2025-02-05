@@ -153,7 +153,7 @@ function App() {
             lg:right-2 absolute space-x-2 flex border-2 border-border rounded-lg
             px-2 py-1 justify-between items-center hover:border-border-hover
             z-20 bg-block"
-          href="https://github.com/anAcc22/another_graph_editor"
+          href="https://github.com/parthDOOM/Lookatthisgraph"
         >
           {settings.darkMode ? (
             <img
