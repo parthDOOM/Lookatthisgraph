@@ -82,10 +82,8 @@ function App() {
       <div
         className={
           settings.darkMode
-            ? `dark bg-ovr text-text absolute w-full overflow-scroll
-              min-h-[1000px]`
-            : `light bg-ovr text-text absolute w-full overflow-scroll
-              min-h-[1000px]`
+            ? "dark bg-ovr text-text absolute w-full overflow-scroll"
+            : "light bg-ovr text-text absolute w-full overflow-scroll"
         }
       >
         <div
@@ -100,6 +98,16 @@ function App() {
               rounded-lg bg-block left-0 top-8 w-100 invisible
               group-hover:visible max-h-28 no-scrollbar overflow-scroll"
           >
+            <p>24 Feb 2025</p>
+            <ul className="list-disc list-inside">
+              <li>Use SVG icons instead</li>
+              <li>Adjust layout positioning</li>
+            </ul>
+            <hr className="border-dashed border-border" />
+            <p>8 Feb 2025</p>
+            <ul className="list-disc list-inside">
+              <li>Add Chinese translations</li>
+            </ul>
             <hr className="border-dashed border-border" />
             <p>4 Feb 2025</p>
             <ul className="list-disc list-inside">
@@ -193,7 +201,7 @@ function App() {
             className="space-x-2 flex border-2 border-border rounded-lg px-2
               py-1 justify-between items-center hover:border-border-hover z-20
               bg-block h-9"
-            href="https://github.com/parthDOOM/Lookatthisgraph.git"
+            href="https://github.com/anAcc22/another_graph_editor"
           >
             {settings.darkMode ? (
               <img
