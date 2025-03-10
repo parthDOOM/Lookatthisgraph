@@ -1,7 +1,6 @@
 import { TestCases } from "../types";
 import { Settings } from "../types";
 import { useRef } from "react";
-import { useState } from "react";
 import { useEffect } from "react";
 
 import { GraphPalette } from "./GraphPalette";
@@ -12,12 +11,39 @@ import { animateGraph } from "./animateGraph";
 
 import { resizeGraph } from "./animateGraph";
 import { updateGraph } from "./animateGraph";
+import { renderGraphToRenderer } from "./animateGraph";
+
+import { SVGRenderer } from "./drawingTools";
+import { CanvasRenderer } from "./drawingTools";
 
 interface Props {
   testCases: TestCases;
   directed: boolean;
   settings: Settings;
   setSettings: React.Dispatch<React.SetStateAction<Settings>>;
+}
+
+export async function loadFontAsBase64(fontPath: string): Promise<string> {
+  try {
+    const response = await fetch(fontPath);
+    const blob = await response.blob();
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          const base64String = reader.result.split(",")[1];
+          resolve(base64String);
+        } else {
+          reject(new Error("Not a String"));
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error("Failed to load font:", error);
+    return "";
+  }
 }
 
 export function GraphCanvas({
@@ -27,10 +53,82 @@ export function GraphCanvas({
   setSettings,
 }: Props) {
   let refMain = useRef<HTMLCanvasElement>(null);
-  let refOverall = useRef<HTMLCanvasElement>(null);
   let refAnnotation = useRef<HTMLCanvasElement>(null);
 
-  const [image, setImage] = useState<string>();
+  const downloadImage = (): void => {
+    let canvasMain = refMain.current;
+    let canvasAnnotation = refAnnotation.current;
+
+    if (canvasMain === null) {
+      console.log("Error: `canvas(Main)` is null!");
+      return;
+    }
+    if (canvasAnnotation === null) {
+      console.log("Error: `canvas(Annotation)` is null!");
+      return;
+    }
+
+    let canvas = document.createElement("canvas");
+    let ctx = canvas.getContext("2d");
+
+    if (ctx === null) {
+      console.log("Error: `ctx` is null!");
+      return;
+    }
+
+    canvas.width = canvasMain.width;
+    canvas.height = canvasMain.height;
+
+    ctx.drawImage(canvasMain, 0, 0);
+    ctx.drawImage(canvasAnnotation, 0, 0);
+
+    let dataURL = canvas.toDataURL("image/png");
+
+    const a = document.createElement("a");
+    a.href = dataURL;
+    a.download = "graph" + Date.now() + ".png";
+    a.click();
+
+    URL.revokeObjectURL(dataURL);
+    canvas.remove();
+    a.remove();
+  };
+
+  const downloadSVG = async (): Promise<void> => {
+    let canvasMain = refMain.current;
+    if (!canvasMain) {
+      console.log("Error: canvas is null!");
+      return;
+    }
+
+    if (SVGRenderer.fontBase64 === "") {
+      SVGRenderer.fontBase64 = await loadFontAsBase64(
+        "/another_graph_editor/JetBrainsMono-Bold.ttf",
+      );
+    }
+
+    const pixelRatio = window.devicePixelRatio || 1;
+
+    // 创建SVG渲染器
+    const svgRenderer = new SVGRenderer(
+      canvasMain.width / pixelRatio,
+      canvasMain.height / pixelRatio,
+    );
+
+    renderGraphToRenderer(svgRenderer);
+
+    const svgContent = svgRenderer.getImage();
+    const blob = new Blob([svgContent], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "graph" + Date.now() + ".svg";
+    a.click();
+
+    URL.revokeObjectURL(url);
+    a.remove();
+  };
 
   const resizeCanvasMain = (): void => {
     let canvas = refMain.current;
@@ -65,7 +163,7 @@ export function GraphCanvas({
   };
 
   const resizeCanvasOverall = (): void => {
-    let canvas = refOverall.current;
+    let canvas = refAnnotation.current;
 
     if (canvas === null) {
       console.log("Error: `canvas` is null!");
@@ -80,29 +178,11 @@ export function GraphCanvas({
     }
 
     const pixelRatio = window.devicePixelRatio || 1;
+
     const rect = canvas.getBoundingClientRect();
 
     const width = pixelRatio * rect.width;
     const height = pixelRatio * rect.height;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.scale(pixelRatio, pixelRatio);
-
-    canvas = refAnnotation.current;
-
-    if (canvas === null) {
-      console.log("Error: `canvas` is null!");
-      return;
-    }
-
-    ctx = canvas.getContext("2d");
-
-    if (ctx === null) {
-      console.log("Error: `ctx` is null!");
-      return;
-    }
 
     const annotations = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -129,38 +209,25 @@ export function GraphCanvas({
     document.fonts.add(font);
 
     let canvasMain = refMain.current;
-    let canvasOverall = refOverall.current;
+    // let canvasOverall = refOverall.current;
     let canvasAnnotation = refAnnotation.current;
 
-    if (
-      canvasMain === null ||
-      canvasOverall === null ||
-      canvasAnnotation === null
-    ) {
+    if (canvasMain === null || canvasAnnotation === null) {
       console.log("Error: canvas is null!");
       return;
     }
 
-    let ctxMain = canvasMain.getContext("2d");
-    let ctxOverall = canvasOverall.getContext("2d");
+    let ctxMain = new CanvasRenderer(canvasMain);
     let ctxAnnotation = canvasAnnotation.getContext("2d");
 
-    if (ctxMain === null || ctxOverall === null || ctxAnnotation === null) {
+    if (ctxMain === null || ctxAnnotation === null) {
       console.log("Error: canvas context is null!");
       return;
     }
 
     resizeCanvas();
 
-    animateGraph(
-      canvasMain,
-      canvasOverall,
-      canvasAnnotation,
-      ctxMain,
-      ctxOverall,
-      ctxAnnotation,
-      setImage,
-    );
+    animateGraph(canvasMain, canvasAnnotation, ctxMain, ctxAnnotation);
 
     window.addEventListener("resize", resizeCanvas);
     return () => {
@@ -232,9 +299,9 @@ export function GraphCanvas({
               >
                 <path
                   d="M11.0605 2.93203C11.3983 2.68689 11.5672 2.56432 11.7518 2.51696C11.9148 2.47514 12.0858 2.47514 12.2488 2.51696C12.4334 2.56432 12.6023 2.68689 12.9401 2.93203L21.0586 8.82396C21.397 9.06956 21.5663 9.19235 21.6686 9.3535C21.7589 9.49579 21.8119 9.65862 21.8224 9.82684C21.8344 10.0174 21.7697 10.2162 21.6404 10.6138L18.5401 20.1449C18.4109 20.5421 18.3463 20.7407 18.2247 20.8876C18.1173 21.0173 17.979 21.1178 17.8224 21.1798C17.6451 21.25 17.4362 21.25 17.0186 21.25H6.98203C6.56437 21.25 6.35554 21.25 6.17822 21.1798C6.02164 21.1178 5.88325 21.0173 5.77589 20.8876C5.65429 20.7407 5.58969 20.5421 5.4605 20.1449L2.36021 10.6138C2.23086 10.2162 2.16619 10.0174 2.17817 9.82684C2.18874 9.65862 2.24166 9.49579 2.33202 9.3535C2.43434 9.19235 2.60355 9.06956 2.94196 8.82396L11.0605 2.93203Z"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </button>
@@ -269,9 +336,9 @@ export function GraphCanvas({
               >
                 <path
                   d="M15.4998 5.49994L18.3282 8.32837M3 20.9997L3.04745 20.6675C3.21536 19.4922 3.29932 18.9045 3.49029 18.3558C3.65975 17.8689 3.89124 17.4059 4.17906 16.9783C4.50341 16.4963 4.92319 16.0765 5.76274 15.237L17.4107 3.58896C18.1918 2.80791 19.4581 2.80791 20.2392 3.58896C21.0202 4.37001 21.0202 5.63634 20.2392 6.41739L8.37744 18.2791C7.61579 19.0408 7.23497 19.4216 6.8012 19.7244C6.41618 19.9932 6.00093 20.2159 5.56398 20.3879C5.07171 20.5817 4.54375 20.6882 3.48793 20.9012L3 20.9997Z"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </button>
@@ -349,23 +416,23 @@ export function GraphCanvas({
               >
                 <path
                   d="M9 9L15 15"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M15 9L9 15"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <circle
                   cx="12"
                   cy="12"
                   r="9"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </button>
@@ -425,12 +492,6 @@ export function GraphCanvas({
         </div>
         <div className="h-full w-full relative">
           <canvas
-            ref={refOverall}
-            className="active:cursor-pointer border-2 border-border
-              hover:border-border-hover rounded-lg shadow shadow-shadow
-              touch-none top-0 bottom-0 left-0 right-0 w-full h-full absolute"
-          ></canvas>
-          <canvas
             ref={refMain}
             className="active:cursor-pointer border-2 border-border
               hover:border-border-hover rounded-lg bg-block shadow shadow-shadow
@@ -456,16 +517,33 @@ export function GraphCanvas({
             }
           ></canvas>
         </div>
-        <a
-          download="graph.png"
-          href={image}
-          className="font-jetbrains text-sm mt-3 text-center border-2
-            border-border rounded-lg px-2 py-1 justify-between items-center
-            hover:border-border-hover hover:cursor-pointer ml-auto
-            active:bg-tab-active"
-        >
-          {settings.language == "en" ? "Download (PNG)" : "下载 (PNG)"}
-        </a>
+        <div className="flex justify-end">
+          <div
+            className="font-jetbrains text-sm mt-3 text-center border-2
+              border-border rounded-lg px-2 py-1.5 justify-between items-center
+              hover:border-border-hover"
+          >
+            <div className="inline">
+              {settings.language == "en" ? "Download" : "下载"}
+            </div>
+            <a
+              onClick={downloadImage}
+              className="text-center inline justify-between items-center ml-2
+                bg-clear-normal px-1 py-0.5 rounded-md hover:bg-clear-hover
+                hover:cursor-pointer active:bg-clear-active"
+            >
+              PNG
+            </a>
+            <a
+              onClick={downloadSVG}
+              className="text-center inline justify-between items-center ml-2
+                bg-randomize px-1 py-0.5 rounded-md hover:bg-randomize-hover
+                hover:cursor-pointer active:bg-randomize-active"
+            >
+              SVG
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
