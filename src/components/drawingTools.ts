@@ -1,7 +1,6 @@
 import { Settings } from "../types";
 
 export interface GraphRenderer {
-  // 基础绘制属性
   lineWidth: number;
   strokeStyle: string;
   fillStyle: string;
@@ -10,12 +9,11 @@ export interface GraphRenderer {
   font: string;
   lineCap: CanvasLineCap;
 
-  // Canvas全局操作
+  // Canvas
   clearRect(x: number, y: number, width: number, height: number): void;
   globalCompositeOperation: GlobalCompositeOperation;
   setLineDash(segments: number[]): void;
 
-  // 路径操作
   beginPath(): void;
   closePath(): void;
   moveTo(x: number, y: number): void;
@@ -37,13 +35,11 @@ export interface GraphRenderer {
     y: number,
   ): void;
 
-  // 绘制操作
   fill(): void;
   stroke(): void;
   fillText(text: string, x: number, y: number, maxWidth?: number): void;
 
-  // 导出方法
-  getImage(): string; // 返回数据URL或SVG字符串
+  getImage(): string; 
 }
 
 export class CanvasRenderer implements GraphRenderer {
@@ -244,14 +240,12 @@ export class SVGRenderer implements GraphRenderer {
     counterclockwise?: boolean,
   ): void {
     if (Math.abs(endAngle - startAngle) >= 2 * Math.PI) {
-      // 完整的圆
       this.currentPath.push(
         `M${x + radius * Math.cos(startAngle)},${y + radius * Math.sin(startAngle)} ` +
           `A${radius},${radius} 0 1 ${counterclockwise ? 0 : 1} ${x + radius * Math.cos(startAngle + Math.PI)},${y + radius * Math.sin(startAngle + Math.PI)} ` +
           `A${radius},${radius} 0 1 ${counterclockwise ? 0 : 1} ${x + radius * Math.cos(startAngle)},${y + radius * Math.sin(startAngle)}`,
       );
     } else {
-      // 圆弧
       const largeArc = Math.abs(endAngle - startAngle) > Math.PI ? 1 : 0;
       const sweepFlag = counterclockwise ? 0 : 1;
       this.currentPath.push(
@@ -278,7 +272,7 @@ export class SVGRenderer implements GraphRenderer {
     let path = this.currentPath.join(" ");
     if (!this.currentPathClosed) path += " Z";
 
-    // SVG 不太支持 destination-out 这种绘制方式，因此进行特判
+    // SVG destination-out 
     if (this.globalCompositeOperation == "destination-out") {
       this.counter ++;
       this.currentContent = `<mask id="mask-${this.counter}"><rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF" /><path d="${path}" fill="#000000" stroke="none" /></mask>\n<g mask="url(#mask-${this.counter})">\n` +

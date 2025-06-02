@@ -23,6 +23,20 @@ interface Props {
   setSettings: React.Dispatch<React.SetStateAction<Settings>>;
 }
 
+function oversampleCanvas(
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  factor: number,
+) {
+  const width = canvas.width;
+  const height = canvas.height;
+  canvas.width = width * factor;
+  canvas.height = height * factor;
+  ctx.scale(factor, factor);
+}
+
+const OVERSAMPLE_FACTOR = 2.0;
+
 export async function loadFontAsBase64(fontPath: string): Promise<string> {
   try {
     const response = await fetch(fontPath);
@@ -109,7 +123,6 @@ export function GraphCanvas({
 
     const pixelRatio = window.devicePixelRatio || 1;
 
-    // 创建SVG渲染器
     const svgRenderer = new SVGRenderer(
       canvasMain.width / pixelRatio,
       canvasMain.height / pixelRatio,
@@ -209,7 +222,6 @@ export function GraphCanvas({
     document.fonts.add(font);
 
     let canvasMain = refMain.current;
-    // let canvasOverall = refOverall.current;
     let canvasAnnotation = refAnnotation.current;
 
     if (canvasMain === null || canvasAnnotation === null) {
@@ -217,17 +229,22 @@ export function GraphCanvas({
       return;
     }
 
-    let ctxMain = new CanvasRenderer(canvasMain);
+    let mainRenderer = new CanvasRenderer(canvasMain);
+
+    let ctxMain = canvasMain.getContext("2d");
     let ctxAnnotation = canvasAnnotation.getContext("2d");
 
-    if (ctxMain === null || ctxAnnotation === null) {
+    if (mainRenderer === null || ctxMain === null || ctxAnnotation === null) {
       console.log("Error: canvas context is null!");
       return;
     }
 
     resizeCanvas();
 
-    animateGraph(canvasMain, canvasAnnotation, ctxMain, ctxAnnotation);
+    animateGraph(canvasMain, canvasAnnotation, mainRenderer, ctxAnnotation);
+
+    oversampleCanvas(canvasMain, ctxMain, OVERSAMPLE_FACTOR);
+    oversampleCanvas(canvasAnnotation, ctxAnnotation, OVERSAMPLE_FACTOR);
 
     window.addEventListener("resize", resizeCanvas);
     return () => {

@@ -75,6 +75,7 @@ function App() {
     fixedMode: false,
     multiedgeMode: true,
     settingsFormat: "general",
+    gridMode: false,
   });
 
   return (
@@ -106,7 +107,7 @@ function App() {
             <hr className="border-dashed border-border" />
             <p>8 Feb 2025</p>
             <ul className="list-disc list-inside">
-              <li>Add Chinese translations jus coz</li>
+              <li>Add Chinese translations</li>
             </ul>
             <hr className="border-dashed border-border" />
             <p>4 Feb 2025</p>
@@ -201,7 +202,7 @@ function App() {
             className="space-x-2 flex border-2 border-border rounded-lg px-2
               py-1 justify-between items-center hover:border-border-hover z-20
               bg-block h-9"
-            href="https://github.com/parthDOOM/Lookatthisgraph"
+            href="https://github.com/anAcc22/another_graph_editor"
           >
             {settings.darkMode ? (
               <img
