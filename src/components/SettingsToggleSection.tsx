@@ -11,24 +11,44 @@ interface Props {
 }
 
 function fixSettingsModes(newSettings: Settings, settingsName: string) {
-  if (
-    newSettings.bipartiteMode &&
-    settingsName === "bipartiteMode"
-  ) {
+  if (newSettings.bipartiteMode && settingsName === "bipartiteMode") {
     newSettings["treeMode"] = false;
     newSettings["gridMode"] = false;
     newSettings["showComponents"] = false;
+    newSettings["showVBCC"] = false;
+    newSettings["showEBCC"] = false;
   }
+
   if (newSettings.treeMode && settingsName === "treeMode") {
     newSettings["bipartiteMode"] = false;
     newSettings["gridMode"] = false;
   }
-  if (
-    newSettings.showComponents &&
-    settingsName === "showComponents"
-  ) {
+
+  if (newSettings.showComponents && settingsName === "showComponents") {
     newSettings["bipartiteMode"] = false;
+    newSettings["showVBCC"] = false;
+    newSettings["showEBCC"] = false;
   }
+
+  if (newSettings.showBridges && settingsName === "showBridges") {
+    newSettings["showVBCC"] = false;
+    newSettings["showEBCC"] = false;
+  }
+
+  if (newSettings.showVBCC && settingsName === "showVBCC") {
+    newSettings["showEBCC"] = false;
+    newSettings["bipartiteMode"] = false;
+    newSettings["showComponents"] = false;
+    newSettings["showBridges"] = false;
+  }
+
+  if (newSettings.showEBCC && settingsName === "showEBCC") {
+    newSettings["showVBCC"] = false;
+    newSettings["bipartiteMode"] = false;
+    newSettings["showComponents"] = false;
+    newSettings["showBridges"] = false;
+  }
+
   if (newSettings.gridMode && settingsName === "gridMode") {
     newSettings["treeMode"] = false;
     newSettings["bipartiteMode"] = false;
@@ -76,6 +96,12 @@ export function SettingsToggleSection({
                         newSettings.markedNodes.toString(),
                       );
                     }
+                    if (settingsName === "edgePhysics") {
+                      localStorage.setItem(
+                        "edgePhysics",
+                        newSettings.edgePhysics.toString(),
+                      );
+                    }
                     return newSettings;
                   });
                   let checkbox = document.getElementById(
@@ -116,6 +142,12 @@ export function SettingsToggleSection({
                         newSettings.markedNodes.toString(),
                       );
                     }
+                    if (settingsName === "edgePhysics") {
+                      localStorage.setItem(
+                        "edgePhysics",
+                        newSettings.edgePhysics.toString(),
+                      );
+                    }
                     return newSettings;
                   });
                   let checkbox = document.getElementById(
@@ -148,6 +180,12 @@ export function SettingsToggleSection({
                   localStorage.setItem(
                     "markedNodes",
                     newSettings.markedNodes.toString(),
+                  );
+                }
+                if (settingsName === "edgePhysics") {
+                  localStorage.setItem(
+                    "edgePhysics",
+                    newSettings.edgePhysics.toString(),
                   );
                 }
                 return newSettings;

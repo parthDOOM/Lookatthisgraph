@@ -223,8 +223,3 @@ only a single one would be registered.
 In addition to the light/dark themes, there are multiple sliders available
 for altering parameters like the node radius, font size, etc. Your settings
 are saved across refreshes using `localStorage`.
-
-## Credits
-
-- [Codeforces](https://codeforces.com/)
-- [-is-this-fft-'s Blog on the DFS Tree](https://codeforces.com/blog/entry/68138)

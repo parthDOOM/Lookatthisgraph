@@ -34,18 +34,28 @@ export interface Settings {
   nodeRadius: number;
   fontSize: number;
   nodeBorderWidthHalf: number;
+  edgeBorderWidthHalf: number;
   edgeLength: number;
   edgeLabelSeparation: number;
+  penThickness: number;
+  penTransparency: number;
+  eraserRadius: number;
+  tension: number;
+  nodeRepulsion: number;
+  testCaseBoundingBoxes: boolean;
   showComponents: boolean;
+  showEBCC: boolean;
+  showVBCC: boolean;
   showBridges: boolean;
   showMSTs: boolean;
   treeMode: boolean;
   bipartiteMode: boolean;
-  gridMode: boolean,
+  gridMode: boolean;
   lockMode: boolean;
   markedNodes: boolean;
   fixedMode: boolean;
   multiedgeMode: boolean;
+  edgePhysics: boolean;
 }
 
 export interface ParsedGraph {
@@ -54,9 +64,18 @@ export interface ParsedGraph {
 }
 
 export type InputFormat = "edges" | "parentChild";
-export type SettingsFormat = "general" | "appearance";
+export type SettingsFormat = "algos" | "modes" | "appearance";
+
+export const SettingsFormatList = ["algos", "modes", "appearance"];
 
 export type ColorMap = Map<string, number>;
+
+export type VBCCColorMap = Map<
+  string,
+  { edge: string | null; group: number }[]
+>;
+export type VBCCEdgeMap = Map<string, number>;
+export type EBCCEdgeMap = Map<string, number[]>;
 
 export type CutMap = Map<string, boolean>;
 
@@ -77,3 +96,17 @@ export interface PositionMap {
 }
 
 export type MarkBorder = "single" | "double";
+
+export interface Randomizer {
+  indexing: number;
+  nodeCount: string;
+  edgeCount: string;
+  connected: boolean;
+  tree: boolean;
+  hasNodeLabel: boolean;
+  nodeLabelMin: string;
+  nodeLabelMax: string;
+  hasEdgeLabel: boolean;
+  edgeLabelMin: string;
+  edgeLabelMax: string;
+}
