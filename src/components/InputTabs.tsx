@@ -1,4 +1,4 @@
-import { Settings, TestCases } from "../types";
+import { TestCases } from "../types";
 import { GraphInput } from "./GraphInput";
 import { InputTab } from "./InputTab";
 import { createTestCase } from "./createTestCase";
@@ -7,7 +7,6 @@ import { Randomizer } from "../types";
 import { useEffect } from "react";
 
 interface Props {
-  settings: Settings;
   tabs: number[];
   setTabs: React.Dispatch<React.SetStateAction<number[]>>;
   inputs: number[];
@@ -26,7 +25,6 @@ interface Props {
 }
 
 export function InputTabs({
-  settings,
   tabs,
   setTabs,
   inputs,
@@ -106,7 +104,7 @@ export function InputTabs({
                 active:bg-tab-active font-semibold mt-8`}
               onClick={() => setInit(true)}
             >
-              {settings.language == "en" ? "Init" : "导入"}
+              Init
             </button>
           </div>
         </div>
@@ -114,7 +112,6 @@ export function InputTabs({
         <ul>
           {inputs.map((input) => (
             <GraphInput
-              settings={settings}
               key={input}
               testCases={testCases}
               setTestCases={setTestCases}

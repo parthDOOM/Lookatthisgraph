@@ -347,7 +347,7 @@ export function GraphCanvas({
                     hover:border-border-hover hover:bg-bg-tab-hover rounded-md
                     w-7 h-7 items-center justify-center active:bg-tab-active`
               }
-              title={settings.language == "en" ? "Paint" : "涂"}
+              title={"Paint"}
               onClick={() => {
                 setSettings({
                   ...settings,
@@ -396,7 +396,7 @@ export function GraphCanvas({
                     hover:border-border-hover hover:bg-bg-tab-hover rounded-md
                     w-7 h-7 items-center justify-center active:bg-tab-active`
               }
-              title={settings.language == "en" ? "Pen" : "画笔"}
+              title={"Pen"}
               onClick={() => {
                 setSettings({
                   ...settings,
@@ -434,7 +434,7 @@ export function GraphCanvas({
                     w-7 h-7 items-center justify-center active:bg-tab-active
                     pb-[5px]`
               }
-              title={settings.language == "en" ? "Eraser" : "橡皮擦"}
+              title={"Eraser"}
               onClick={() => {
                 setSettings({
                   ...settings,
@@ -461,11 +461,7 @@ export function GraphCanvas({
                 text-lg hover:border-border-hover rounded-md w-7 h-7
                 items-center justify-center active:bg-tab-active pl-[0.45px]
                 pt-[0.1px]"
-              title={
-                settings.language == "en"
-                  ? "Clear ALL Annotations"
-                  : "清除所有笔迹"
-              }
+              title={"Clear ALL Annotations"}
               onClick={() => {
                 let canvas = refAnnotation.current;
 
@@ -525,11 +521,7 @@ export function GraphCanvas({
                 text-lg hover:border-border-hover hover:bg-bg-tab-hover
                 rounded-md w-7 h-7 items-center justify-center
                 active:bg-tab-active pb-0.5"
-              title={
-                settings.language == "en"
-                  ? "Expand/Contract Canvas"
-                  : "展开/收缩画布"
-              }
+              title={"Expand/Contract Canvas"}
               onClick={() => {
                 setSettings({
                   ...settings,
@@ -607,7 +599,7 @@ export function GraphCanvas({
               hover:border-border-hover"
           >
             <div className="inline">
-              {settings.language == "en" ? "Download" : "下载"}
+              Download
             </div>
             <a
               onClick={downloadImage}

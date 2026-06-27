@@ -2,7 +2,6 @@ import { parseGraphInputEdges } from "./parseGraphInput";
 import { parseGraphInputParentChild } from "./parseGraphInput";
 import { useState, useEffect } from "react";
 
-import { Settings } from "../types";
 import { ParsedGraph } from "../types";
 import { TestCases } from "../types";
 import { Randomizer } from "../types";
@@ -11,7 +10,6 @@ import { isInteger, padNode, randInt, sortNodes } from "./utils";
 import { generateRandomGraph, generateRandomNodeLabels } from "./generator";
 
 interface Props {
-  settings: Settings;
   key: number;
   testCases: TestCases;
   setTestCases: React.Dispatch<React.SetStateAction<TestCases>>;
@@ -24,7 +22,6 @@ interface Props {
 }
 
 export function GraphInput({
-  settings,
   testCases,
   setTestCases,
   inputId,
@@ -227,7 +224,7 @@ export function GraphInput({
         }
       >
         <h4 className="text-base font-semibold">
-          {settings.language == "en" ? "Current Nodes" : "节点"}
+          {"Current Nodes"}
         </h4>
         <textarea
           wrap="off"
@@ -251,7 +248,7 @@ export function GraphInput({
         ></textarea>
 
         <h4 className="text-base font-semibold">
-          {settings.language == "en" ? "Node Labels" : "节点标签"}
+          {"Node Labels"}
         </h4>
         <textarea
           wrap="off"
@@ -261,9 +258,7 @@ export function GraphInput({
           onChange={processNodeLabels}
           onKeyDown={handleTextAreaKeyDown}
           placeholder={
-            settings.language == "en"
-              ? "TIP: '_' -> empty label"
-              : "提示：'_' -> 空标签"
+            "TIP: '_' -> empty label"
           }
           className={
             testCases.get(inputId)?.inputFormat === "edges"
@@ -282,9 +277,7 @@ export function GraphInput({
           onChange={processNodeLabels}
           onKeyDown={handleTextAreaKeyDown}
           placeholder={
-            settings.language == "en"
-              ? "TIP: '_' -> empty label"
-              : "提示：'_' -> 空标签"
+            "TIP: '_' -> empty label"
           }
           className={
             testCases.get(inputId)?.inputFormat === "parentChild"
@@ -303,7 +296,7 @@ export function GraphInput({
             <span>
               {testCases.get(inputId)?.inputFormat === "edges" ? (
                 <span className="text-selected p-0 hover:cursor-pointer">
-                  {settings.language == "en" ? "Edges" : "边集"}
+                  {"Edges"}
                 </span>
               ) : (
                 <span
@@ -325,7 +318,7 @@ export function GraphInput({
                     checkbox.checked = false;
                   }}
                 >
-                  {settings.language == "en" ? "Edges" : "边集"}
+                  {"Edges"}
                 </span>
               )}
             </span>
@@ -333,7 +326,7 @@ export function GraphInput({
             <span>
               {testCases.get(inputId)?.inputFormat === "parentChild" ? (
                 <span className="text-selected p-0 hover:cursor-pointer">
-                  {settings.language == "en" ? "Parent-Child" : "父亲-子节点"}
+                  {"Parent-Child"}
                 </span>
               ) : (
                 <span
@@ -355,7 +348,7 @@ export function GraphInput({
                     checkbox.checked = true;
                   }}
                 >
-                  {settings.language == "en" ? "Parent-Child" : "父亲-子节点"}
+                  {"Parent-Child"}
                 </span>
               )}
             </span>
@@ -401,7 +394,7 @@ export function GraphInput({
             <span>
               {!directed ? (
                 <span className="text-selected p-0 hover:cursor-pointer">
-                  {settings.language == "en" ? "Undirected" : "无向"}
+                  {"Undirected"}
                 </span>
               ) : (
                 <span
@@ -414,7 +407,7 @@ export function GraphInput({
                     checkbox.checked = false;
                   }}
                 >
-                  {settings.language == "en" ? "Undirected" : "无向"}
+                  {"Undirected"}
                 </span>
               )}
             </span>
@@ -422,7 +415,7 @@ export function GraphInput({
             <span>
               {directed ? (
                 <span className="text-selected p-0 hover:cursor-pointer">
-                  {settings.language == "en" ? "Directed" : "有向"}
+                  {"Directed"}
                 </span>
               ) : (
                 <span
@@ -435,7 +428,7 @@ export function GraphInput({
                     checkbox.checked = true;
                   }}
                 >
-                  {settings.language == "en" ? "Directed" : "有向"}
+                  {"Directed"}
                 </span>
               )}
             </span>
@@ -470,7 +463,7 @@ export function GraphInput({
               : "hidden"
           }
         >
-          {settings.language == "en" ? "Roots" : "根"}
+          {"Roots"}
         </h4>
         <textarea
           wrap="off"
@@ -495,7 +488,7 @@ export function GraphInput({
               : "hidden"
           }
         >
-          {settings.language == "en" ? "Roots" : "根"}
+          {"Roots"}
         </h4>
         <textarea
           wrap="off"
@@ -520,7 +513,7 @@ export function GraphInput({
               : "hidden"
           }
         >
-          {settings.language == "en" ? "Edges" : "边集"}
+          {"Edges"}
         </h4>
         <textarea
           wrap="off"
@@ -545,7 +538,7 @@ export function GraphInput({
               : "hidden"
           }
         >
-          {settings.language == "en" ? "Parent Array" : "父节点数组"}
+          {"Parent Array"}
         </h4>
         <textarea
           wrap="off"
@@ -570,7 +563,7 @@ export function GraphInput({
               : "hidden"
           }
         >
-          {settings.language == "en" ? "Child Array" : "子节点数组"}
+          {"Child Array"}
         </h4>
         <textarea
           wrap="off"
@@ -596,7 +589,7 @@ export function GraphInput({
               : "hidden"
           }
         >
-          {settings.language == "en" ? "Edge Labels" : "边标签"}
+          {"Edge Labels"}
         </h4>
         <textarea
           wrap="off"
@@ -635,21 +628,21 @@ export function GraphInput({
               processGraphInput();
             }}
           >
-            {settings.language == "en" ? "Clear" : "清除"}
+            {"Clear"}
           </button>
           {inputStatus ? (
             <span
               className="font-jetbrains bg-format-ok rounded-md text-right px-2
                 py-1 flex items-center"
             >
-              {settings.language == "en" ? "Format ✓" : "格式 ✓"}
+              {"Format ✓"}
             </span>
           ) : (
             <span
               className="font-jetbrains bg-format-bad rounded-md text-right px-2
                 py-1 flex items-center"
             >
-              {settings.language == "en" ? "Format 𝗫" : "格式 𝗫"}
+              {"Format 𝗫"}
             </span>
           )}
           <div
@@ -758,51 +751,27 @@ export function GraphInput({
                 } catch (error: any) {
                   console.log(error);
                   if (error.message === `n must be an integer >= 0!`) {
-                    setRandomizerError(
-                      settings.language === "en"
-                        ? `n must be an integer >= 0!`
-                        : `n 必须是非负整数!`,
-                    );
+                    setRandomizerError(`n must be an integer >= 0!`);
                   }
                   if (error.message === `m must be an integer >= 0!`) {
-                    setRandomizerError(
-                      settings.language === "en"
-                        ? `m must be an integer >= 0!`
-                        : `m 必须是非负整数!`,
-                    );
+                    setRandomizerError(`m must be an integer >= 0!`);
                   }
                   if (error.message === `too many edges!`) {
-                    setRandomizerError(
-                      settings.language === "en"
-                        ? `too many edges!`
-                        : `边的数量过多!`,
-                    );
+                    setRandomizerError(`too many edges!`);
                   }
                   if (error.message === `insufficient edges!`) {
-                    setRandomizerError(
-                      settings.language === "en"
-                        ? `insufficient edges!`
-                        : `边的数量过少!`,
-                    );
+                    setRandomizerError(`insufficient edges!`);
                   }
                   if (error.message === `invalid node label range`) {
-                    setRandomizerError(
-                      settings.language === "en"
-                        ? `invalid node label range`
-                        : `节点标签的范围不合法`,
-                    );
+                    setRandomizerError(`invalid node label range`);
                   }
                   if (error.message === `invalid edge label range`) {
-                    setRandomizerError(
-                      settings.language === "en"
-                        ? `invalid edge label range`
-                        : `边的标签的范围不合法`,
-                    );
+                    setRandomizerError(`invalid edge label range`);
                   }
                 }
               }}
             >
-              {settings.language == "en" ? "Random" : "随机"}
+              {"Random"}
             </button>
             <svg
               width="22px"

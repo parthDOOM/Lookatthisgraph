@@ -23,7 +23,6 @@ export interface TestCase {
 export type TestCases = Map<number, TestCase>;
 
 export interface Settings {
-  language: "en" | "cn";
   drawMode: "node" | "pen" | "erase";
   expandedCanvas: boolean;
   markBorder: MarkBorder;

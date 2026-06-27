@@ -33,7 +33,7 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
               localStorage.setItem("settingsFormat", "modes");
             }}
           >
-            {settings.language == "en" ? "Modes" : "模式设置"}
+            Modes
           </button>
           <button
             className={
@@ -50,7 +50,7 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
               localStorage.setItem("settingsFormat", "algos");
             }}
           >
-            {settings.language == "en" ? "Algos" : "算法设置"}
+            Algos
           </button>
           <button
             className={
@@ -67,7 +67,7 @@ export function GraphSettings({ directed, settings, setSettings }: Props) {
               localStorage.setItem("settingsFormat", "appearance");
             }}
           >
-            {settings.language == "en" ? "Appearance" : "外观设置"}
+            Appearance
           </button>
         </div>
       </div>

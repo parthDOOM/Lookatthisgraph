@@ -35,10 +35,6 @@ function App() {
   const [inputs, setInputs] = useState<number[]>([0]);
 
   const [settings, setSettings] = useState<Settings>({
-    language:
-      localStorage.getItem("language") !== null
-        ? (localStorage.getItem("language")! as "en" | "cn")
-        : "en",
     drawMode: "node",
     expandedCanvas: false,
     markBorder: "double",
@@ -183,147 +179,9 @@ function App() {
         }
       >
         <div
-          className="font-jetbrains text-base sm:top-2 lg:top-2 sm:left-2
-            lg:left-2 absolute space-x-2 flex border-2 border-border rounded-lg
-            px-2 py-1 justify-between items-center hover:border-border-hover
-            z-20 bg-block group h-9"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-5 mr-1"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
-            />
-          </svg>
-          {settings.language == "en" ? "Changelog" : "更新记录"}
-          <div
-            className="absolute border-2 text-sm px-2 py-1 border-border-hover
-              rounded-lg bg-block -left-2 top-8 w-100 invisible
-              group-hover:visible max-h-28 no-scrollbar overflow-scroll"
-          >
-            <p>22 Dec 2025</p>
-            <ul className="list-disc list-inside">
-              <li>Add edge physics</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>15 Aug 2025</p>
-            <ul className="list-disc list-inside">
-              <li>Support edge coloring</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>5 June 2025</p>
-            <ul className="list-disc list-inside">
-              <li>Improve annotation experience</li>
-              <li>Add randomizer config</li>
-              <li>Add "Init" system</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>24 Feb 2025</p>
-            <ul className="list-disc list-inside">
-              <li>Use SVG icons instead</li>
-              <li>Adjust layout positioning</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>8 Feb 2025</p>
-            <ul className="list-disc list-inside">
-              <li>Add Chinese translations</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>4 Feb 2025</p>
-            <ul className="list-disc list-inside">
-              <li>
-                Make node background <b>transparent</b> by default
-              </li>
-              <li>
-                Add <b>draw</b> and <b>erase</b> modes
-              </li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>9 Dec 2024</p>
-            <ul className="list-disc list-inside">
-              <li>Add toggle button to expand/shrink canvas</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>7 Dec 2024</p>
-            <ul className="list-disc list-inside">
-              <li>
-                Add <b>palette</b> to color nodes on click
-              </li>
-              <li>Allow user to disable marking behavior</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>6 Dec 2024</p>
-            <ul className="list-disc list-inside">
-              <li>Add minimum spanning tree(s)</li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>5 Dec 2024</p>
-            <ul className="list-disc list-inside">
-              <li>Support multiple graphs (aka testcases)</li>
-              <li>
-                Split settings into <b>general</b> and <b>appearance</b>
-              </li>
-              <li>
-                Add <b>bipartite mode</b>
-              </li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>11 Nov 2024</p>
-            <ul className="list-disc list-inside">
-              <li>
-                Add <b>multiedge mode</b> (enabled by default)
-              </li>
-              <li>
-                Add <b>fixed mode</b> (fix/unfix marked nodes)
-              </li>
-            </ul>
-            <hr className="border-dashed border-border" />
-            <p>10 Nov 2024</p>
-            <ul className="list-disc list-inside">
-              <li>Mark/Unmark nodes on click</li>
-            </ul>
-          </div>
-        </div>
-
-        <div
           className="sm:top-2 lg:top-2 sm:right-2 lg:right-2 absolute flex
             space-x-3 font-jetbrains text-base"
         >
-          <div
-            className="flex space-x-2 border-2 border-border rounded-lg
-              justify-between items-center z-20 px-2 h-9"
-          >
-            <button
-              className={
-                settings.language == "en" ? "text-selected" : "text-text"
-              }
-              onClick={() => {
-                setSettings({ ...settings, language: "en" });
-                localStorage.setItem("language", "en");
-              }}
-            >
-              EN
-            </button>
-            <div>|</div>
-            <button
-              className={
-                settings.language == "cn" ? "text-selected" : "text-text"
-              }
-              onClick={() => {
-                setSettings({ ...settings, language: "cn" });
-                localStorage.setItem("language", "cn");
-              }}
-            >
-              中文
-            </button>
-          </div>
           <a
             className="space-x-2 flex border-2 border-border rounded-lg px-2
               py-1 justify-between items-center hover:border-border-hover z-20
@@ -349,7 +207,6 @@ function App() {
 
         {init ? (
           <InitScreen
-            settings={settings}
             setInit={setInit}
             testCaseNumber={testCaseNumber}
             setTestCaseNumber={setTestCaseNumber}
@@ -363,7 +220,6 @@ function App() {
 
         {randomizer ? (
           <RandomizerScreen
-            settings={settings}
             setRandomizer={setRandomizer}
             randomizerConfig={randomizerConfig}
             setRandomizerConfig={setRandomizerConfig}
@@ -373,7 +229,6 @@ function App() {
         )}
 
         <InputTabs
-          settings={settings}
           tabs={tabs}
           setTabs={setTabs}
           inputs={inputs}

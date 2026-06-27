@@ -215,7 +215,6 @@ let inErase = false;
 let rainbowHue = 0;
 
 let settings: Settings = {
-  language: "en",
   drawMode: "node",
   expandedCanvas: false,
   markBorder: "double",

@@ -21,7 +21,7 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
         }
       >
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Label Offset" : "标签偏移量"}
+          {"Label Offset"}
         </h4>
         <input
           type="range"
@@ -56,9 +56,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
 
         {!directed ? (
           <SettingsToggleSection
-            title={settings.language == "en" ? "Tree Mode" : "树模式"}
-            leftLabel={settings.language == "en" ? "Off" : "关闭"}
-            rightLabel={settings.language == "en" ? "On" : "开启"}
+            title={"Tree Mode"}
+            leftLabel={"Off"}
+            rightLabel={"On"}
             toggleId={"settingsTreeMode"}
             settingsName={"treeMode"}
             settings={settings}
@@ -70,9 +70,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
 
         {localStorage.getItem("isBipartite") === "true" ? (
           <SettingsToggleSection
-            title={settings.language == "en" ? "Bipartite Mode" : "二分图模式"}
-            leftLabel={settings.language == "en" ? "Off" : "关闭"}
-            rightLabel={settings.language == "en" ? "On" : "开启"}
+            title={"Bipartite Mode"}
+            leftLabel={"Off"}
+            rightLabel={"On"}
             toggleId={"settingsBipartiteMode"}
             settingsName={"bipartiteMode"}
             settings={settings}
@@ -80,9 +80,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
           />
         ) : (
           <SettingsToggleSectionDimmed
-            title={settings.language == "en" ? "Bipartite Mode" : "二分图模式"}
-            leftLabel={settings.language == "en" ? "Off" : "关闭"}
-            rightLabel={settings.language == "en" ? "On" : "开启"}
+            title={"Bipartite Mode"}
+            leftLabel={"Off"}
+            rightLabel={"On"}
             toggleId={"settingsBipartiteMode"}
             settingsName={"bipartiteMode"}
             settings={settings}
@@ -91,9 +91,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
         )}
 
         <SettingsToggleSection
-          title={settings.language == "en" ? "Grid Mode" : "方格模式"}
-          leftLabel={settings.language == "en" ? "Off" : "关闭"}
-          rightLabel={settings.language == "en" ? "On" : "开启"}
+          title={"Grid Mode"}
+          leftLabel={"Off"}
+          rightLabel={"On"}
           toggleId={"gridMode"}
           settingsName={"gridMode"}
           settings={settings}
@@ -101,9 +101,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
         />
 
         <SettingsToggleSection
-          title={settings.language == "en" ? "Lock Mode" : "锁定模式"}
-          leftLabel={settings.language == "en" ? "Off" : "关闭"}
-          rightLabel={settings.language == "en" ? "On" : "开启"}
+          title={"Lock Mode"}
+          leftLabel={"Off"}
+          rightLabel={"On"}
           toggleId={"settingsLockMode"}
           settingsName={"lockMode"}
           settings={settings}
@@ -111,13 +111,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
         />
 
         <SettingsToggleSection
-          title={
-            settings.language == "en"
-              ? "Mark/Unmark Nodes on Click"
-              : "点击时标记节点"
-          }
-          leftLabel={settings.language == "en" ? "Off" : "关闭"}
-          rightLabel={settings.language == "en" ? "On" : "开启"}
+          title={"Mark/Unmark Nodes on Click"}
+          leftLabel={"Off"}
+          rightLabel={"On"}
           toggleId={"settingsMarkedNodes"}
           settingsName={"markedNodes"}
           settings={settings}
@@ -126,9 +122,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
 
         {settings.markedNodes ? (
           <SettingsToggleSection
-            title={settings.language == "en" ? "Fixed Mode" : "固定模式"}
-            leftLabel={settings.language == "en" ? "Off" : "关闭"}
-            rightLabel={settings.language == "en" ? "On" : "开启"}
+            title={"Fixed Mode"}
+            leftLabel={"Off"}
+            rightLabel={"On"}
             toggleId={"settingsFixedMode"}
             settingsName={"fixedMode"}
             settings={settings}
@@ -136,9 +132,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
           />
         ) : (
           <SettingsToggleSectionDimmed
-            title={settings.language == "en" ? "Fixed Mode" : "固定模式"}
-            leftLabel={settings.language == "en" ? "Off" : "关闭"}
-            rightLabel={settings.language == "en" ? "On" : "开启"}
+            title={"Fixed Mode"}
+            leftLabel={"Off"}
+            rightLabel={"On"}
             toggleId={"settingsFixedMode"}
             settingsName={"fixedMode"}
             settings={settings}
@@ -147,9 +143,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
         )}
 
         <SettingsToggleSection
-          title={settings.language == "en" ? "Multiedge Mode" : "重边模式"}
-          leftLabel={settings.language == "en" ? "Off" : "关闭"}
-          rightLabel={settings.language == "en" ? "On" : "开启"}
+          title={"Multiedge Mode"}
+          leftLabel={"Off"}
+          rightLabel={"On"}
           toggleId={"settingsMultiedgeMode"}
           settingsName={"multiedgeMode"}
           settings={settings}
@@ -157,9 +153,9 @@ export function ModeSettings({ directed, settings, setSettings }: Props) {
         />
 
         <SettingsToggleSection
-          title={settings.language == "en" ? "Edge Physics" : "边的弯曲效果"}
-          leftLabel={settings.language == "en" ? "Off" : "关闭"}
-          rightLabel={settings.language == "en" ? "On" : "开启"}
+          title={"Edge Physics"}
+          leftLabel={"Off"}
+          rightLabel={"On"}
           toggleId={"settingsEdgePhysics"}
           settingsName={"edgePhysics"}
           settings={settings}

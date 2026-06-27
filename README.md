@@ -25,7 +25,7 @@ Made with React, Typescript, Tailwind CSS, and HTML Canvas.
   corresponds to the value at node `i` (simply copy and paste the given array into
   **node labels**).
 - Label offset (to convert a zero-indexed input to one-indexed and vice versa)
-- Dark/light themes
+- Dark/light theme
 - Undirected/directed graphs
 - Normal/tree/bipartite modes
 - Lock mode (fix marked nodes in place)

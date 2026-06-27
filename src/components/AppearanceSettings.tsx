@@ -20,9 +20,9 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         }
       >
         <SettingsToggleSection
-          title={settings.language == "en" ? "Theme" : "主题"}
-          leftLabel={settings.language == "en" ? "Light" : "亮"}
-          rightLabel={settings.language == "en" ? "Dark" : "暗"}
+          title={"Theme"}
+          leftLabel={"Light"}
+          rightLabel={"Dark"}
           toggleId={"settingsTheme"}
           settingsName={"darkMode"}
           settings={settings}
@@ -30,13 +30,9 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <SettingsToggleSection
-          title={
-            settings.language == "en"
-              ? "Testcase Bounding Boxes"
-              : "测试用例边框"
-          }
-          leftLabel={settings.language == "en" ? "Hide" : "隐藏"}
-          rightLabel={settings.language == "en" ? "Show" : "展示"}
+          title={"Testcase Bounding Boxes"}
+          leftLabel={"Hide"}
+          rightLabel={"Show"}
           toggleId={"settingsBoundingBoxes"}
           settingsName={"testCaseBoundingBoxes"}
           settings={settings}
@@ -46,7 +42,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         <hr className="border-dashed border-border" />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Node Radius" : "节点半径"}
+          {"Node Radius"}
         </h4>
         <input
           type="range"
@@ -75,7 +71,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Font Size" : "字体大小"}
+          {"Font Size"}
         </h4>
         <input
           type="range"
@@ -104,9 +100,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en"
-            ? "Line Thickness (Node)"
-            : "线条粗细 (节点)"}
+          Line Thickness (Node)
         </h4>
         <input
           type="range"
@@ -138,9 +132,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en"
-            ? "Line Thickness (Edge)"
-            : "线条粗细 (边)"}
+          Line Thickness (Edge)
         </h4>
         <input
           type="range"
@@ -172,7 +164,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Edge Length" : "边的长度"}
+          {"Edge Length"}
         </h4>
         <input
           type="range"
@@ -201,9 +193,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en"
-            ? "Edge Label Separation"
-            : "边和标签的距离"}
+          Edge Label Separation
         </h4>
         <input
           type="range"
@@ -238,7 +228,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         <hr className="border-dashed border-border" />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Pen Thickness" : "画笔粗细"}
+          {"Pen Thickness"}
         </h4>
         <input
           type="range"
@@ -267,7 +257,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Pen Transparency" : "画笔透明度"}
+          {"Pen Transparency"}
         </h4>
         <input
           type="range"
@@ -299,7 +289,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Eraser Radius" : "橡皮擦半径"}
+          {"Eraser Radius"}
         </h4>
         <input
           type="range"
@@ -331,7 +321,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         <hr className="border-dashed border-border" />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Edge Tension" : "边的张力"}
+          {"Edge Tension"}
         </h4>
         <input
           type="range"
@@ -360,7 +350,7 @@ export function AppearanceSettings({ settings, setSettings }: Props) {
         />
 
         <h4 className="font-semibold">
-          {settings.language == "en" ? "Node Repulsion" : "节点斥力"}
+          {"Node Repulsion"}
         </h4>
         <input
           type="range"

@@ -21,9 +21,9 @@ export function AlgorithmSettings({ directed, settings, setSettings }: Props) {
         }
       >
         <SettingsToggleSection
-          title={settings.language == "en" ? "Components" : "连通分量"}
-          leftLabel={settings.language == "en" ? "Hide" : "隐藏"}
-          rightLabel={settings.language == "en" ? "Show" : "展示"}
+          title={"Components"}
+          leftLabel={"Hide"}
+          rightLabel={"Show"}
           toggleId={"settingsComponents"}
           settingsName={"showComponents"}
           settings={settings}
@@ -32,13 +32,9 @@ export function AlgorithmSettings({ directed, settings, setSettings }: Props) {
 
         {!directed ? (
           <SettingsToggleSection
-            title={
-              settings.language == "en"
-                ? "Edge-Biconnected Components"
-                : "边双联通分量"
-            }
-            leftLabel={settings.language == "en" ? "Hide" : "隐藏"}
-            rightLabel={settings.language == "en" ? "Show" : "展示"}
+            title={"Edge-Biconnected Components"}
+            leftLabel={"Hide"}
+            rightLabel={"Show"}
             toggleId={"settingsEBCC"}
             settingsName={"showEBCC"}
             settings={settings}
@@ -50,13 +46,9 @@ export function AlgorithmSettings({ directed, settings, setSettings }: Props) {
 
         {!directed ? (
           <SettingsToggleSection
-            title={
-              settings.language == "en"
-                ? "Vertex-Biconnected Components"
-                : "点双联通分量"
-            }
-            leftLabel={settings.language == "en" ? "Hide" : "隐藏"}
-            rightLabel={settings.language == "en" ? "Show" : "展示"}
+            title={"Vertex-Biconnected Components"}
+            leftLabel={"Hide"}
+            rightLabel={"Show"}
             toggleId={"settingsVBCC"}
             settingsName={"showVBCC"}
             settings={settings}
@@ -68,13 +60,9 @@ export function AlgorithmSettings({ directed, settings, setSettings }: Props) {
 
         {!directed ? (
           <SettingsToggleSection
-            title={
-              settings.language == "en"
-                ? "Bridges and Cut Vertices"
-                : "割点和桥"
-            }
-            leftLabel={settings.language == "en" ? "Hide" : "隐藏"}
-            rightLabel={settings.language == "en" ? "Show" : "展示"}
+            title={"Bridges and Cut Vertices"}
+            leftLabel={"Hide"}
+            rightLabel={"Show"}
             toggleId={"settingsBridges"}
             settingsName={"showBridges"}
             settings={settings}
@@ -86,13 +74,9 @@ export function AlgorithmSettings({ directed, settings, setSettings }: Props) {
 
         {!directed && localStorage.getItem("isEdgeNumeric") === "true" ? (
           <SettingsToggleSection
-            title={
-              settings.language == "en"
-                ? "Minimum Spanning Tree(s)"
-                : "最小生成树（森林）"
-            }
-            leftLabel={settings.language == "en" ? "Hide" : "隐藏"}
-            rightLabel={settings.language == "en" ? "Show" : "展示"}
+            title={"Minimum Spanning Tree(s)"}
+            leftLabel={"Hide"}
+            rightLabel={"Show"}
             toggleId={"settingsShowMSTs"}
             settingsName={"showMSTs"}
             settings={settings}
@@ -100,13 +84,9 @@ export function AlgorithmSettings({ directed, settings, setSettings }: Props) {
           />
         ) : !directed ? (
           <SettingsToggleSectionDimmed
-            title={
-              settings.language == "en"
-                ? "Minimum Spanning Tree(s)"
-                : "最小生成树（森林）"
-            }
-            leftLabel={settings.language == "en" ? "Hide" : "隐藏"}
-            rightLabel={settings.language == "en" ? "Show" : "展示"}
+            title={"Minimum Spanning Tree(s)"}
+            leftLabel={"Hide"}
+            rightLabel={"Show"}
             toggleId={"settingsShowMSTs"}
             settingsName={"showMSTs"}
             settings={settings}

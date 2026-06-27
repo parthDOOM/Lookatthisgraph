@@ -1,7 +1,6 @@
-import { Settings, Randomizer } from "../types";
+import { Randomizer } from "../types";
 
 interface Props {
-  settings: Settings;
   setRandomizer: React.Dispatch<React.SetStateAction<boolean>>;
   randomizerConfig: Randomizer;
   setRandomizerConfig: React.Dispatch<React.SetStateAction<Randomizer>>;
@@ -14,7 +13,6 @@ const handleTextAreaKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 };
 
 export function RandomizerScreen({
-  settings,
   setRandomizer,
   randomizerConfig,
   setRandomizerConfig,
@@ -34,9 +32,7 @@ export function RandomizerScreen({
         >
           <div className="flex justify-between items-center">
             <h4 className="text-base font-semibold">
-              {settings.language == "en"
-                ? "Randomizer Configuration"
-                : "随机化配置"}
+              Randomizer Configuration
             </h4>
             <div>
               <button
@@ -51,7 +47,7 @@ export function RandomizerScreen({
                   localStorage.setItem("randomizerIndexing", "0");
                 }}
               >
-                {settings.language == "en" ? "0-indexed" : "0-索引"}
+                {"0-indexed"}
               </button>
               <button
                 className={
@@ -65,7 +61,7 @@ export function RandomizerScreen({
                   localStorage.setItem("randomizerIndexing", "1");
                 }}
               >
-                {settings.language == "en" ? "1-indexed" : "1-索引"}
+                {"1-indexed"}
               </button>
             </div>
           </div>
@@ -75,9 +71,7 @@ export function RandomizerScreen({
           <div className="flex-col space-y-3">
             <div className="flex justify-between items-center">
               <div>
-                {settings.language == "en"
-                  ? "Node Count (n)"
-                  : "节点数 (n)"}
+                Node Count (n)
               </div>
               <input
                 type="text"
@@ -101,9 +95,7 @@ export function RandomizerScreen({
             ) : (
               <div className="flex justify-between items-center">
                 <div>
-                  {settings.language == "en"
-                    ? "Edge Count (m)"
-                    : "边数 (m)"}
+                  Edge Count (m)
                 </div>
                 <input
                   type="text"
@@ -128,7 +120,7 @@ export function RandomizerScreen({
             ) : (
               <div className="flex justify-between items-center">
                 <div>
-                  {settings.language == "en" ? "Connected" : "保证联通"}
+                  {"Connected"}
                 </div>
                 <label className="relative inline w-12">
                   <input
@@ -164,7 +156,7 @@ export function RandomizerScreen({
             )}
 
             <div className="flex justify-between items-center">
-              <div>{settings.language == "en" ? "Tree" : "保证为树"}</div>
+              <div>{"Tree"}</div>
               <label className="relative inline w-12">
                 <input
                   type="checkbox"
@@ -199,7 +191,7 @@ export function RandomizerScreen({
 
             <div className="flex justify-between items-center">
               <div>
-                {settings.language == "en" ? "Node Label" : "生成节点标签"}
+                {"Node Label"}
               </div>
               <label className="relative inline w-12">
                 <input
@@ -238,9 +230,7 @@ export function RandomizerScreen({
             ) : (
               <div className="flex justify-between items-center">
                 <div>
-                  {settings.language == "en"
-                    ? "Inclusive Range [min, max]"
-                    : "闭区间 [min, max]"}
+                  Inclusive Range [min, max]
                 </div>
                 <div className="flex space-x-3 items-center">
                   <input
@@ -286,7 +276,7 @@ export function RandomizerScreen({
 
             <div className="flex justify-between items-center">
               <div>
-                {settings.language == "en" ? "Edge Label" : "生成边标签"}
+                {"Edge Label"}
               </div>
               <label className="relative inline w-12">
                 <input
@@ -325,9 +315,7 @@ export function RandomizerScreen({
             ) : (
               <div className="flex justify-between items-center">
                 <div>
-                  {settings.language == "en"
-                    ? "Inclusive Range [min, max]"
-                    : "闭区间 [min, max]"}
+                  Inclusive Range [min, max]
                 </div>
                 <div className="flex space-x-3 items-center">
                   <input
@@ -382,7 +370,7 @@ export function RandomizerScreen({
                 setRandomizer(false);
               }}
             >
-              {settings.language == "en" ? "Exit" : "关闭"}
+              {"Exit"}
             </button>
           </div>
         </div>

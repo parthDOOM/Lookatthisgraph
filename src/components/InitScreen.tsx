@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Settings, TestCases } from "../types";
+import { TestCases } from "../types";
 
 import { initPreviewMap } from "./presets";
 import { initNameMap } from "./presets";
 import { initBuildMap } from "./presets";
 
 interface Props {
-  settings: Settings;
   setInit: React.Dispatch<React.SetStateAction<boolean>>;
   testCaseNumber: number;
   setTestCaseNumber: React.Dispatch<React.SetStateAction<number>>;
@@ -23,7 +22,6 @@ for (let i = 0; i < options; i++) {
 }
 
 export function InitScreen({
-  settings,
   setInit,
   testCaseNumber,
   setTestCaseNumber,
@@ -54,7 +52,7 @@ export function InitScreen({
           >
             <div className="flex justify-between items-center">
               <h4 className="text-base font-semibold">
-                {settings.language == "en" ? "Presets" : "预设"}
+                {"Presets"}
               </h4>
               <div>
                 <button
@@ -66,7 +64,7 @@ export function InitScreen({
                   }
                   onClick={() => setIndexing(0)}
                 >
-                  {settings.language == "en" ? "0-indexed" : "0-索引"}
+                  {"0-indexed"}
                 </button>
                 <button
                   className={
@@ -77,7 +75,7 @@ export function InitScreen({
                   }
                   onClick={() => setIndexing(1)}
                 >
-                  {settings.language == "en" ? "1-indexed" : "1-索引"}
+                  {"1-indexed"}
                 </button>
               </div>
             </div>
@@ -93,7 +91,7 @@ export function InitScreen({
                   }
                   onClick={() => setSelected(idx)}
                 >
-                  {initNameMap.get(idx + settings.language) ?? ""}
+                  {initNameMap.get(idx + "en") ?? ""}
                 </button>
               ))}
             </div>
@@ -106,7 +104,7 @@ export function InitScreen({
             onClick={(e) => e.stopPropagation()}
           >
             <h4 className="text-base font-semibold">
-              {settings.language == "en" ? "Preview" : "示例"}
+              {"Preview"}
             </h4>
             <textarea
               wrap="off"
@@ -131,7 +129,7 @@ export function InitScreen({
             onClick={(e) => e.stopPropagation()}
           >
             <h4 className="text-base font-semibold">
-              {settings.language == "en" ? "Input" : "输入"}
+              {"Input"}
             </h4>
             <textarea
               wrap="off"
@@ -144,9 +142,7 @@ export function InitScreen({
                 no-scrollbar`}
             ></textarea>
             <div className="text-format-bad-border text-sm">
-              {settings.language == "en"
-                ? "WARN: This will override all data!"
-                : "警告: 这会覆盖当前所有数据!"}
+              WARN: This will override all data!
             </div>
 
             <div className="flex justify-between">
@@ -157,7 +153,7 @@ export function InitScreen({
                   active:bg-opacity-50 font-semibold text-format-bad-border`}
                 onClick={() => setInit(false)}
               >
-                {settings.language == "en" ? "Cancel" : "取消"}
+                {"Cancel"}
               </button>
               <button
                 className={`h-7 border-2 border-format-ok-border bg-block
@@ -184,7 +180,7 @@ export function InitScreen({
                   setInit(false);
                 }}
               >
-                {settings.language == "en" ? "Confirm" : "确定"}
+                {"Confirm"}
               </button>
             </div>
           </div>
